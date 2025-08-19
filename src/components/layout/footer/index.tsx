@@ -33,7 +33,6 @@ const Footer = () => {
             <div className='app-footer__vertical-line' />
             <ServerTime />
             <div className='app-footer__vertical-line' />
-            {/* [AI] */}
             <NetworkStatus />
             <Endpoint />
 
