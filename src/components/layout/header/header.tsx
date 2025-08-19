@@ -52,8 +52,6 @@ const AppHeader = observer(({ isAuthenticating }: TAppHeaderProps) => {
         } else if (activeLoginid) {
             return (
                 <>
-                    {/* <CustomNotifications /> */}
-
                     {isDesktop && has_wallet && (
                         <Button
                             className='manage-funds-button'
