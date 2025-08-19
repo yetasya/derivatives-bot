@@ -75,7 +75,56 @@ class APIBase {
 
     onsocketopen() {
         setConnectionStatus(CONNECTION_STATUS.OPENED);
+
+        // [AI] Check for token exchange after websocket opens
+        this.handleTokenExchangeIfNeeded();
+        // [/AI]
     }
+
+    // [AI] Simple token exchange check - read directly from URL when needed
+    private async handleTokenExchangeIfNeeded() {
+        // Check URL directly for one-time token (no localStorage needed)
+        const urlParams = new URLSearchParams(window.location.search);
+        const oneTimeToken = urlParams.get('token');
+
+        if (oneTimeToken) {
+            // Remove token from URL immediately for security
+            const url = new URL(window.location.href);
+            url.searchParams.delete('token');
+            window.history.replaceState({}, document.title, url.toString());
+
+            // Exchange the token
+            setIsAuthorizing(true);
+
+            try {
+                const response = await this.getSessionToken(oneTimeToken);
+
+                if (response?.error) {
+                    console.error('Token exchange failed:', response.error);
+                    setIsAuthorizing(false);
+                    return;
+                }
+
+                if (response?.get_session_token?.token) {
+                    const sessionToken = response.get_session_token.token;
+                    localStorage.setItem('session_token', sessionToken);
+
+                    console.log('✅ Token exchange successful');
+                }
+            } catch (error) {
+                console.error('Error exchanging token:', error);
+                setIsAuthorizing(false);
+                return;
+            }
+        }
+
+        // Now proceed with normal authorization if we have a token
+        if (V2GetActiveToken()) {
+            setIsAuthorizing(true);
+            await this.authorizeAndSubscribe();
+        }
+    }
+    // [/AI]
 
     onsocketclose() {
         setConnectionStatus(CONNECTION_STATUS.CLOSED);
@@ -110,11 +159,6 @@ class APIBase {
 
         if (this.time_interval) clearInterval(this.time_interval);
         this.time_interval = null;
-
-        if (V2GetActiveToken()) {
-            setIsAuthorizing(true);
-            await this.authorizeAndSubscribe();
-        }
 
         chart_api.init(force_create_connection);
     }
@@ -204,6 +248,16 @@ class APIBase {
         } finally {
             setIsAuthorizing(false);
         }
+    }
+
+    async getSessionToken(oneTimeToken: string) {
+        if (!this.api) {
+            throw new Error('API connection not available');
+        }
+
+        return this.api.send({
+            get_session_token: oneTimeToken,
+        });
     }
 
     async getSelfExclusion() {

@@ -140,7 +140,7 @@ const AccountSwitcher = observer(({ activeAccount }: TAccountSwitcher) => {
         const account_list = JSON.parse(localStorage.getItem('accountsList') ?? '{}');
         const token = account_list[loginId];
         if (!token) return;
-        localStorage.setItem('authToken', token);
+        localStorage.setItem('session_token', token);
         localStorage.setItem('active_loginid', loginId.toString());
         const account_type =
             loginId

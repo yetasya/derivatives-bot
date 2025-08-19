@@ -23,7 +23,7 @@ export const getLoginId = () => {
 };
 
 export const V2GetActiveToken = () => {
-    const token = localStorage.getItem('authToken');
+    const token = localStorage.getItem('session_token');
     if (token && token !== 'null') return token;
     return null;
 };

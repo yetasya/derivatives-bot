@@ -12,6 +12,7 @@ import {
 import type { TAuthData, TLandingCompany } from '@/types/api-types';
 import type { Balance, GetAccountStatus, GetSettings, WebsiteStatus } from '@deriv/api-types';
 import { Analytics } from '@deriv-com/analytics';
+import type RootStore from './root-store';
 
 const eu_shortcode_regex = /^maltainvest$/;
 const eu_excluded_regex = /^mt$/;
@@ -31,12 +32,36 @@ export default class ClientStore {
     all_accounts_balance: Balance | null = null;
     is_logging_out = false;
 
+    private authDataSubscription: { unsubscribe: () => void } | null = null;
+    private root_store: RootStore;
+
     // TODO: fix with self exclusion
     updateSelfExclusion = () => {};
 
-    private authDataSubscription: { unsubscribe: () => void } | null = null;
+    removeTokenFromUrl() {
+        const url = new URL(window.location.href);
+        if (url.searchParams.has('token')) {
+            url.searchParams.delete('token');
+            window.history.replaceState({}, document.title, url.toString());
+        }
+    }
 
-    constructor() {
+    storeSessionToken(token: string) {
+        if (token) {
+            localStorage.setItem('session_token', token);
+        }
+    }
+
+    getSessionToken(): string | null {
+        return localStorage.getItem('session_token');
+    }
+
+    clearSessionToken() {
+        localStorage.removeItem('session_token');
+    }
+
+    constructor(root_store: RootStore) {
+        this.root_store = root_store;
         // Subscribe to auth data changes
         this.authDataSubscription = authData$.subscribe(authData => {
             if (authData?.upgradeable_landing_companies) {
