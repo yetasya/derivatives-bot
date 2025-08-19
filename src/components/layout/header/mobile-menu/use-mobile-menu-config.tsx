@@ -1,9 +1,6 @@
 import { ComponentProps, ReactNode, useMemo } from 'react';
-import Livechat from '@/components/chat/Livechat';
-import useIsLiveChatWidgetAvailable from '@/components/chat/useIsLiveChatWidgetAvailable';
 import { standalone_routes } from '@/components/shared';
 import { useFirebaseCountriesConfig } from '@/hooks/firebase/useFirebaseCountriesConfig';
-import { useIsIntercomAvailable } from '@/hooks/useIntercom';
 import useThemeSwitcher from '@/hooks/useThemeSwitcher';
 import useTMB from '@/hooks/useTMB';
 import RootStore from '@/stores/root-store';
@@ -11,7 +8,6 @@ import {
     LegacyAccountLimitsIcon,
     LegacyCashierIcon,
     LegacyChartsIcon,
-    LegacyHelpCentreIcon,
     LegacyHomeOldIcon,
     LegacyProfileSmIcon,
     LegacyReportsIcon,
@@ -41,9 +37,6 @@ type TMenuConfig = {
 const useMobileMenuConfig = (client?: RootStore['client']) => {
     const { localize } = useTranslations();
     const { is_dark_mode_on, toggleTheme } = useThemeSwitcher();
-
-    const { is_livechat_available } = useIsLiveChatWidgetAvailable();
-    const icAvailable = useIsIntercomAvailable();
 
     // Get current account information for dependency tracking
     const is_virtual = client?.is_virtual;
@@ -144,12 +137,6 @@ const useMobileMenuConfig = (client?: RootStore['client']) => {
             [
                 {
                     as: 'a',
-                    href: standalone_routes.help_center,
-                    label: localize('Help center'),
-                    LeftComponent: LegacyHelpCentreIcon,
-                },
-                {
-                    as: 'a',
                     href: standalone_routes.account_limits,
                     label: localize('Account limits'),
                     LeftComponent: LegacyAccountLimitsIcon,
@@ -160,16 +147,6 @@ const useMobileMenuConfig = (client?: RootStore['client']) => {
                     label: localize('Responsible trading'),
                     LeftComponent: LegacyResponsibleTradingIcon,
                 },
-                is_livechat_available || icAvailable
-                    ? {
-                          as: 'button',
-                          label: localize('Live chat'),
-                          LeftComponent: Livechat,
-                          onClick: () => {
-                              icAvailable ? window.Intercom('show') : window.LiveChatWidget?.call('maximize');
-                          },
-                      }
-                    : null,
             ].filter(Boolean) as TMenuConfig,
             // Logout button removed from mobile interface as per acceptance criteria
             [],

@@ -3,12 +3,10 @@ import { getActiveTabUrl } from '@/utils/getActiveTabUrl';
 import { LANGUAGES } from '@/utils/languages';
 import { useTranslations } from '@deriv-com/translations';
 import { DesktopLanguagesModal } from '@deriv-com/ui';
-import Livechat from '../../chat/Livechat';
 import AccountLimits from './AccountLimits';
 import ChangeTheme from './ChangeTheme';
 import Endpoint from './Endpoint';
 import FullScreen from './FullScreen';
-import HelpCentre from './HelpCentre';
 import LanguageSettings from './LanguageSettings';
 import NetworkStatus from './NetworkStatus';
 import ResponsibleTrading from './ResponsibleTrading';
@@ -24,12 +22,10 @@ const Footer = () => {
         <footer className='app-footer'>
             <FullScreen />
             <LanguageSettings openLanguageSettingModal={openLanguageSettingModal} />
-            <HelpCentre />
             <div className='app-footer__vertical-line' />
             <ChangeTheme />
             <AccountLimits />
             <ResponsibleTrading />
-            <Livechat />
             <div className='app-footer__vertical-line' />
             <ServerTime />
             <div className='app-footer__vertical-line' />
