@@ -6,7 +6,6 @@ import { DesktopLanguagesModal } from '@deriv-com/ui';
 import Livechat from '../../chat/Livechat';
 import AccountLimits from './AccountLimits';
 import ChangeTheme from './ChangeTheme';
-import Deriv from './Deriv';
 import Endpoint from './Endpoint';
 import FullScreen from './FullScreen';
 import HelpCentre from './HelpCentre';
@@ -30,11 +29,11 @@ const Footer = () => {
             <ChangeTheme />
             <AccountLimits />
             <ResponsibleTrading />
-            <Deriv />
             <Livechat />
             <div className='app-footer__vertical-line' />
             <ServerTime />
             <div className='app-footer__vertical-line' />
+            {/* [AI] */}
             <NetworkStatus />
             <Endpoint />
 
