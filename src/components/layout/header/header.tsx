@@ -54,44 +54,27 @@ const AppHeader = observer(({ isAuthenticating }: TAppHeaderProps) => {
                 <>
                     {/* <CustomNotifications /> */}
 
-                    {isDesktop &&
-                        (has_wallet ? (
-                            <Button
-                                className='manage-funds-button'
-                                has_effect
-                                text={localize('Manage funds')}
-                                onClick={() => {
-                                    let redirect_url = new URL(standalone_routes.wallets_transfer);
-                                    const is_hub_enabled_country = hubEnabledCountryList.includes(
-                                        client?.residence || ''
-                                    );
-                                    if (is_hub_enabled_country) {
-                                        redirect_url = new URL(standalone_routes.recent_transactions);
-                                    }
-                                    if (is_virtual) {
-                                        redirect_url.searchParams.set('account', 'demo');
-                                    } else if (currency) {
-                                        redirect_url.searchParams.set('account', currency);
-                                    }
-                                    window.location.assign(redirect_url.toString());
-                                }}
-                                primary
-                            />
-                        ) : (
-                            <Button
-                                primary
-                                onClick={() => {
-                                    const redirect_url = new URL(standalone_routes.cashier_deposit);
-                                    if (currency) {
-                                        redirect_url.searchParams.set('account', currency);
-                                    }
-                                    window.location.assign(redirect_url.toString());
-                                }}
-                                className='deposit-button'
-                            >
-                                {localize('Deposit')}
-                            </Button>
-                        ))}
+                    {isDesktop && has_wallet && (
+                        <Button
+                            className='manage-funds-button'
+                            has_effect
+                            text={localize('Manage funds')}
+                            onClick={() => {
+                                let redirect_url = new URL(standalone_routes.wallets_transfer);
+                                const is_hub_enabled_country = hubEnabledCountryList.includes(client?.residence || '');
+                                if (is_hub_enabled_country) {
+                                    redirect_url = new URL(standalone_routes.recent_transactions);
+                                }
+                                if (is_virtual) {
+                                    redirect_url.searchParams.set('account', 'demo');
+                                } else if (currency) {
+                                    redirect_url.searchParams.set('account', currency);
+                                }
+                                window.location.assign(redirect_url.toString());
+                            }}
+                            primary
+                        />
+                    )}
 
                     <AccountSwitcher activeAccount={activeAccount} />
 

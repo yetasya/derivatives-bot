@@ -5,7 +5,6 @@ import useThemeSwitcher from '@/hooks/useThemeSwitcher';
 import useTMB from '@/hooks/useTMB';
 import RootStore from '@/stores/root-store';
 import {
-    LegacyCashierIcon,
     LegacyChartsIcon,
     LegacyHomeOldIcon,
     LegacyProfileSmIcon,
@@ -111,13 +110,7 @@ const useMobileMenuConfig = (client?: RootStore['client']) => {
                     label: localize('Account Settings'),
                     LeftComponent: LegacyProfileSmIcon,
                 },
-                !has_wallet &&
-                    !is_hub_enabled_country && {
-                        as: 'a',
-                        href: standalone_routes.cashier_deposit,
-                        label: localize('Cashier'),
-                        LeftComponent: LegacyCashierIcon,
-                    },
+
                 client?.is_logged_in && {
                     as: 'button',
                     label: localize('Reports'),
