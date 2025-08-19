@@ -79,7 +79,6 @@ class APIBase {
         this.handleTokenExchangeIfNeeded();
     }
 
-    // [AI] Simple token exchange check - read directly from URL when needed
     private async handleTokenExchangeIfNeeded() {
         // Check URL directly for one-time token (no localStorage needed)
         const urlParams = new URLSearchParams(window.location.search);
@@ -122,7 +121,6 @@ class APIBase {
             await this.authorizeAndSubscribe();
         }
     }
-    // [/AI]
 
     onsocketclose() {
         setConnectionStatus(CONNECTION_STATUS.CLOSED);
