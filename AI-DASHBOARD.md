@@ -2,8 +2,8 @@
 
 <div align="center">
 
-**deriv-com/bot**
-📅 Last updated: 2025-08-18 14:15:55 UTC • 🔄 Tracking merged PRs to main/master
+**deriv-com/derivatives-bot**
+📅 Last updated: 2025-08-19 10:05:04 UTC • 🔄 Tracking merged PRs to main/master
 
 </div>
 
@@ -13,7 +13,7 @@
 
 | Metric | Value | Metric | Value |
 |--------|-------|--------|-------|
-| **📁 Total Merged PRs** | 5 | **📈 Average AI Code** | ⬜⬜⬜⬜⬜⬜⬜⬜⬜⬜ 0% |
+| **📁 Total Merged PRs** | 6 | **📈 Average AI Code** | ⬜⬜⬜⬜⬜⬜⬜⬜⬜⬜ 0% |
 | **🤖 PRs with AI Analysis** | 4 | **🎯 Overall AI Percentage** | ⬜⬜⬜⬜⬜⬜⬜⬜⬜⬜ 0% |
 | **📄 Files Analyzed** | 13 | **⚡ Total AI Characters** | 0 |
 
@@ -21,10 +21,11 @@
 
 ## 🚀 Recent Merged Pull Requests
 
-> 📊 Showing the 10 most recent merged PRs (stats above include all 5 PRs)
+> 📊 Showing the 10 most recent merged PRs (stats above include all 6 PRs)
 
 | PR | Author | Date | Files | AI Content | Percentage |
 |----|--------|------|-------|------------|------------|
+| [#2](#) **Matin/Update CODEOWNERS file and GH Workflows** | [@matin-deriv](https://github.com/matin-deriv) | 8/19/2025 | N/A | No data | ⬜⬜⬜⬜⬜⬜⬜⬜⬜⬜⬜⬜⬜⬜⬜   0% |
 | [#551](#) **chore: update shiftai-cli version** | [@prince-deriv](https://github.com/prince-deriv) | 8/18/2025 | 4 | 0 / 689 chars | ⬜⬜⬜⬜⬜⬜⬜⬜⬜⬜⬜⬜⬜⬜⬜   0% |
 | [#545](#) **chore: update shiftai-cli version** | [@prince-deriv](https://github.com/prince-deriv) | 8/18/2025 | 2 | 0 / 413 chars | ⬜⬜⬜⬜⬜⬜⬜⬜⬜⬜⬜⬜⬜⬜⬜   0% |
 | [#543](#) **Prince/ added githooks shiftai** | [@prince-deriv](https://github.com/prince-deriv) | 8/18/2025 | 5 | 0 / 27,276 chars | ⬜⬜⬜⬜⬜⬜⬜⬜⬜⬜⬜⬜⬜⬜⬜   0% |

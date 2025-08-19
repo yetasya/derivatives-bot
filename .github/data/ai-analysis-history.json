@@ -1,7 +1,20 @@
 {
-  "lastUpdated": "2025-08-18T14:15:54.988Z",
-  "totalMergedPRs": 5,
+  "lastUpdated": "2025-08-19T10:05:03.971Z",
+  "totalMergedPRs": 6,
   "analyses": [
+    {
+      "timestamp": "2025-08-19T10:05:03.921Z",
+      "repository": "deriv-com/derivatives-bot",
+      "pullRequest": "2",
+      "branch": "matin/initial_pr",
+      "author": "matin-deriv",
+      "prTitle": "Matin/Update CODEOWNERS file and GH Workflows",
+      "hasAnalysis": false,
+      "percentage": 0,
+      "totalCharacters": 0,
+      "aiCharacters": 0,
+      "files": []
+    },
     {
       "percentage": 0,
       "totalCharacters": 689,
