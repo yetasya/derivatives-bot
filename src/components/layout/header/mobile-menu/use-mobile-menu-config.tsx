@@ -5,13 +5,11 @@ import useThemeSwitcher from '@/hooks/useThemeSwitcher';
 import useTMB from '@/hooks/useTMB';
 import RootStore from '@/stores/root-store';
 import {
-    LegacyAccountLimitsIcon,
     LegacyCashierIcon,
     LegacyChartsIcon,
     LegacyHomeOldIcon,
     LegacyProfileSmIcon,
     LegacyReportsIcon,
-    LegacyResponsibleTradingIcon,
     LegacyTheme1pxIcon,
 } from '@deriv/quill-icons/Legacy';
 import { BrandDerivLogoCoralIcon } from '@deriv/quill-icons/Logo';
@@ -134,20 +132,7 @@ const useMobileMenuConfig = (client?: RootStore['client']) => {
                     RightComponent: <ToggleSwitch value={is_dark_mode_on} onChange={toggleTheme} />,
                 },
             ].filter(Boolean) as TMenuConfig,
-            [
-                {
-                    as: 'a',
-                    href: standalone_routes.account_limits,
-                    label: localize('Account limits'),
-                    LeftComponent: LegacyAccountLimitsIcon,
-                },
-                {
-                    as: 'a',
-                    href: standalone_routes.responsible,
-                    label: localize('Responsible trading'),
-                    LeftComponent: LegacyResponsibleTradingIcon,
-                },
-            ].filter(Boolean) as TMenuConfig,
+            [],
             // Logout button removed from mobile interface as per acceptance criteria
             [],
         ],

@@ -3,13 +3,11 @@ import { getActiveTabUrl } from '@/utils/getActiveTabUrl';
 import { LANGUAGES } from '@/utils/languages';
 import { useTranslations } from '@deriv-com/translations';
 import { DesktopLanguagesModal } from '@deriv-com/ui';
-import AccountLimits from './AccountLimits';
 import ChangeTheme from './ChangeTheme';
 import Endpoint from './Endpoint';
 import FullScreen from './FullScreen';
 import LanguageSettings from './LanguageSettings';
 import NetworkStatus from './NetworkStatus';
-import ResponsibleTrading from './ResponsibleTrading';
 import ServerTime from './ServerTime';
 import './footer.scss';
 
@@ -24,8 +22,6 @@ const Footer = () => {
             <LanguageSettings openLanguageSettingModal={openLanguageSettingModal} />
             <div className='app-footer__vertical-line' />
             <ChangeTheme />
-            <AccountLimits />
-            <ResponsibleTrading />
             <div className='app-footer__vertical-line' />
             <ServerTime />
             <div className='app-footer__vertical-line' />
