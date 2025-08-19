@@ -76,9 +76,7 @@ class APIBase {
     onsocketopen() {
         setConnectionStatus(CONNECTION_STATUS.OPENED);
 
-        // [AI] Check for token exchange after websocket opens
         this.handleTokenExchangeIfNeeded();
-        // [/AI]
     }
 
     // [AI] Simple token exchange check - read directly from URL when needed
