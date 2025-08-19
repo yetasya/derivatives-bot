@@ -1,10 +1,6 @@
 import { ReactNode } from 'react';
 import { standalone_routes } from '@/components/shared';
-import {
-    LegacyCashierIcon as CashierLogo,
-    LegacyHomeNewIcon as TradershubLogo,
-    LegacyReportsIcon as ReportsLogo,
-} from '@deriv/quill-icons/Legacy';
+import { LegacyHomeNewIcon as TradershubLogo, LegacyReportsIcon as ReportsLogo } from '@deriv/quill-icons/Legacy';
 import {
     DerivProductBrandLightDerivBotLogoWordmarkIcon as DerivBotLogo,
     DerivProductBrandLightDerivTraderLogoWordmarkIcon as DerivTraderLogo,
@@ -71,16 +67,10 @@ export const TRADERS_HUB_LINK_CONFIG = {
     as: 'a',
     href: standalone_routes.traders_hub,
     icon: <TradershubLogo iconSize='xs' />,
-    label: "Trader's Hub",
+    label: 'Hub',
 };
 
 export const MenuItems: MenuItemsConfig[] = [
-    {
-        as: 'a',
-        href: standalone_routes.cashier,
-        icon: <CashierLogo iconSize='xs' />,
-        label: localize('Cashier'),
-    },
     {
         as: 'a',
         href: standalone_routes.reports,
