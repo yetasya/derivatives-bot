@@ -1,7 +1,102 @@
 {
-  "lastUpdated": "2025-08-19T10:05:03.971Z",
-  "totalMergedPRs": 6,
+  "lastUpdated": "2025-08-20T04:09:53.025Z",
+  "totalMergedPRs": 7,
   "analyses": [
+    {
+      "percentage": 46,
+      "totalCharacters": 2161,
+      "aiCharacters": 992,
+      "files": [
+        {
+          "name": "src/components/layout/footer/index.tsx",
+          "totalCharacters": 0,
+          "aiCharacters": 0,
+          "percentage": 0,
+          "status": "only-deletions",
+          "hasAddedContent": false,
+          "addedContent": ""
+        },
+        {
+          "name": "src/components/layout/header/account-switcher.scss",
+          "totalCharacters": 97,
+          "aiCharacters": 85,
+          "percentage": 88,
+          "status": "modified",
+          "hasAddedContent": true,
+          "addedContent": "\n.account-switcher-fixed {\n    pointer-events: none !important;\n    cursor: default !important;\n}"
+        },
+        {
+          "name": "src/components/layout/header/account-switcher.tsx",
+          "totalCharacters": 1861,
+          "aiCharacters": 856,
+          "percentage": 46,
+          "status": "modified",
+          "hasAddedContent": true,
+          "addedContent": "    const { ui, client } = useStore();\n    // Removed is_stop_button_visible as UIAccountSwitcher is now always disabled\n                <div className='account-switcher-fixed'>\n                    <UIAccountSwitcher\n                        activeAccount={activeAccount}\n                        isDisabled={true} // Force disabled to prevent interactions\n                        tabsLabels={tabs_labels}\n                        modalContentStyle={{\n                            content: {\n            ..."
+        },
+        {
+          "name": "src/components/layout/header/header-config.tsx",
+          "totalCharacters": 132,
+          "aiCharacters": 0,
+          "percentage": 0,
+          "status": "modified",
+          "hasAddedContent": true,
+          "addedContent": "import { LegacyHomeNewIcon as TradershubLogo, LegacyReportsIcon as ReportsLogo } from '@deriv/quill-icons/Legacy';\n    label: 'Hub',"
+        },
+        {
+          "name": "src/components/layout/header/header.scss",
+          "totalCharacters": 0,
+          "aiCharacters": 0,
+          "percentage": 0,
+          "status": "only-deletions",
+          "hasAddedContent": false,
+          "addedContent": ""
+        },
+        {
+          "name": "src/components/layout/header/header.tsx",
+          "totalCharacters": 0,
+          "aiCharacters": 0,
+          "percentage": 0,
+          "status": "only-deletions",
+          "hasAddedContent": false,
+          "addedContent": ""
+        },
+        {
+          "name": "src/components/layout/header/mobile-menu/__tests__/menu-content.spec.tsx",
+          "totalCharacters": 55,
+          "aiCharacters": 51,
+          "percentage": 93,
+          "status": "modified",
+          "hasAddedContent": true,
+          "addedContent": "    it('renders MenuItem components correctly', () => {"
+        },
+        {
+          "name": "src/components/layout/header/mobile-menu/menu-content.tsx",
+          "totalCharacters": 0,
+          "aiCharacters": 0,
+          "percentage": 0,
+          "status": "only-deletions",
+          "hasAddedContent": false,
+          "addedContent": ""
+        },
+        {
+          "name": "src/components/layout/header/mobile-menu/use-mobile-menu-config.tsx",
+          "totalCharacters": 16,
+          "aiCharacters": 0,
+          "percentage": 0,
+          "status": "modified",
+          "hasAddedContent": true,
+          "addedContent": "\n            [],"
+        }
+      ],
+      "timestamp": "2025-08-20T04:09:52.975Z",
+      "repository": "deriv-com/derivatives-bot",
+      "pullRequest": "1",
+      "branch": "mvp-cleanup",
+      "author": "prince-deriv",
+      "prTitle": "Prince/ MVP Cleanup ",
+      "hasAnalysis": true
+    },
     {
       "timestamp": "2025-08-19T10:05:03.921Z",
       "repository": "deriv-com/derivatives-bot",
