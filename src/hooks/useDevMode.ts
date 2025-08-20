@@ -26,7 +26,6 @@ const useDevMode = () => {
 
     useEffect(() => {
         const handleKeyPress = (event: KeyboardEvent) => {
-            // [AI]
             // Check for Cmd+Shift+D on Mac or Ctrl+Shift+D on Windows/Linux
             const isModifierPressed = event.metaKey || event.ctrlKey;
             const isShiftPressed = event.shiftKey;
@@ -51,4 +50,3 @@ const useDevMode = () => {
 };
 
 export default useDevMode;
-// [/AI]
