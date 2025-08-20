@@ -222,7 +222,6 @@ class APIBase {
 
             this.account_info = authorize;
 
-            // [AI] Handle new API response shape - no account_list in authorize response
             // Create account list from current account data with all required TAccount fields
             const currentAccount = authorize?.loginid
                 ? {
