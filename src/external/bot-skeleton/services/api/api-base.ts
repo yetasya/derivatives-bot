@@ -221,12 +221,52 @@ class APIBase {
             }
 
             this.account_info = authorize;
-            setAccountList(authorize?.account_list || []);
+
+            // [AI] Handle new API response shape - no account_list in authorize response
+            // Create account list from current account data with all required TAccount fields
+            const currentAccount = authorize?.loginid
+                ? {
+                      loginid: authorize.loginid,
+                      currency: authorize.currency || 'USD',
+                      is_virtual: authorize.is_virtual || 0,
+                      // Required TAccount fields with defaults for new API
+                      account_category: authorize.is_virtual ? 'trading' : 'trading',
+                      account_type: authorize.is_virtual ? 'virtual' : 'financial',
+                      broker: 'MF', // Default broker
+                      created_at: Date.now() / 1000, // Current timestamp as default
+                      currency_type: authorize.is_virtual ? 'virtual' : 'fiat',
+                      is_disabled: 0,
+                      landing_company_name: 'maltainvest',
+                      linked_to: [],
+                  }
+                : null;
+
+            const accountList = currentAccount ? [currentAccount] : [];
+
+            setAccountList(accountList); // Observable stream
             setAuthData(authorize);
+
+            globalObserver.emit('api.authorize', {
+                account_list: accountList,
+                current_account: {
+                    loginid: authorize?.loginid,
+                    currency: authorize?.currency || 'USD',
+                    is_virtual: authorize?.is_virtual || 0,
+                    balance: typeof authorize?.balance === 'number' ? authorize.balance : undefined,
+                },
+            });
+
             setIsAuthorized(true);
             this.is_authorized = true;
-            localStorage.setItem('client_account_details', JSON.stringify(authorize?.account_list));
+            localStorage.setItem('client_account_details', JSON.stringify(accountList));
             localStorage.setItem('client.country', authorize?.country);
+
+            if (authorize?.loginid && this.token) {
+                const existingAccountsList = JSON.parse(localStorage.getItem('accountsList') || '{}');
+                existingAccountsList[authorize.loginid] = this.token;
+                localStorage.setItem('accountsList', JSON.stringify(existingAccountsList));
+                localStorage.setItem('active_loginid', authorize.loginid);
+            }
 
             if (this.has_active_symbols) {
                 this.toggleRunButton(false);
@@ -269,8 +309,8 @@ class APIBase {
                     const subscription = this.api?.send({
                         [streamName]: 1,
                         subscribe: 1,
-                        ...(streamName === 'balance' ? { account: 'all' } : {}),
                     });
+
                     if (subscription) {
                         this.current_auth_subscriptions.push(subscription);
                     }

@@ -28,7 +28,10 @@ const AppHeader = observer(({ isAuthenticating }: TAppHeaderProps) => {
     const { isAuthorizing, activeLoginid } = useApiBase();
     const { client } = useStore() ?? {};
 
-    const { data: activeAccount } = useActiveAccount({ allBalanceData: client?.all_accounts_balance });
+    const { data: activeAccount } = useActiveAccount({
+        allBalanceData: client?.all_accounts_balance,
+        directBalance: client?.balance,
+    });
     const { accounts, getCurrency, is_virtual } = client ?? {};
     const has_wallet = Object.keys(accounts ?? {}).some(id => accounts?.[id].account_category === 'wallet');
 

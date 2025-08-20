@@ -100,9 +100,9 @@ const AccountSwitcher = observer(({ activeAccount }: TAccountSwitcher) => {
             return {
                 ...account,
                 balance: addComma(
-                    client.all_accounts_balance?.accounts?.[account?.loginid]?.balance?.toFixed(
-                        getDecimalPlaces(account.currency)
-                    ) ?? '0'
+                    account?.loginid === client.loginid
+                        ? parseFloat(client.balance || '0').toFixed(getDecimalPlaces(account.currency))
+                        : parseFloat('0').toFixed(getDecimalPlaces(account.currency))
                 ),
                 currencyLabel: account?.is_virtual
                     ? tabs_labels.demo

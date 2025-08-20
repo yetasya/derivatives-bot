@@ -2,7 +2,7 @@ import { action, computed, makeObservable, observable } from 'mobx';
 import { ContentFlag, isEmptyObject } from '@/components/shared';
 import { isEuCountry, isMultipliersOnly, isOptionsBlocked } from '@/components/shared/common/utility';
 import { removeCookies } from '@/components/shared/utils/storage/storage';
-import { api_base } from '@/external/bot-skeleton';
+import { api_base, observer } from '@/external/bot-skeleton';
 import {
     authData$,
     setAccountList,
@@ -60,6 +60,26 @@ export default class ClientStore {
         localStorage.removeItem('session_token');
     }
 
+    onAuthorizeEvent = (data: {
+        account_list?: TAuthData['account_list'];
+        current_account?: { loginid: string; currency: string; is_virtual: number; balance?: number };
+    }) => {
+        if (data?.account_list) {
+            this.setAccountList(data.account_list);
+        }
+
+        // Update current account details from new API structure
+        if (data?.current_account) {
+            this.setLoginId(data.current_account.loginid);
+            this.setCurrency(data.current_account.currency);
+            this.setIsLoggedIn(true);
+
+            if (typeof data.current_account.balance === 'number') {
+                this.setBalance(data.current_account.balance.toString());
+            }
+        }
+    };
+
     constructor(root_store: RootStore) {
         this.root_store = root_store;
         // Subscribe to auth data changes
@@ -68,6 +88,8 @@ export default class ClientStore {
                 this.setUpgradeableLandingCompanies(authData.upgradeable_landing_companies);
             }
         });
+
+        observer.register('api.authorize', this.onAuthorizeEvent);
 
         makeObservable(this, {
             accounts: observable,
@@ -98,6 +120,7 @@ export default class ClientStore {
             residence: computed,
             should_show_eu_error: computed,
             logout: action,
+            onAuthorizeEvent: action,
             setAccountList: action,
             setAccountSettings: action,
             setAccountStatus: action,
@@ -419,4 +442,9 @@ export default class ClientStore {
                 return Promise.reject(error);
             });
     };
+
+    destroy() {
+        this.authDataSubscription?.unsubscribe();
+        observer.unregister('api.authorize', this.onAuthorizeEvent);
+    }
 }
