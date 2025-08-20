@@ -105,8 +105,6 @@ class APIBase {
                 if (response?.get_session_token?.token) {
                     const sessionToken = response.get_session_token.token;
                     localStorage.setItem('session_token', sessionToken);
-
-                    console.log('✅ Token exchange successful');
                 }
             } catch (error) {
                 console.error('Error exchanging token:', error);

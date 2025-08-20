@@ -239,27 +239,6 @@
             justify-content: flex-end;
             padding: 16px;
         }
-
-        &-button {
-            margin-left: 1.6rem;
-            padding: 0.8rem 1.6rem;
-
-            &.btn--tertiary {
-                color: var(--text-general);
-                border: 1px solid var(--border-normal);
-                background: transparent;
-
-                &:hover {
-                    background: var(--general-hover);
-                    border-color: var(--border-hover);
-                }
-
-                &:active {
-                    background: var(--general-active);
-                    border-color: var(--border-active);
-                }
-            }
-        }
     }
 
     &__tradershub-link {
