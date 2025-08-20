@@ -1,29 +1,19 @@
 import { ComponentProps, ReactNode, useMemo } from 'react';
-import Livechat from '@/components/chat/Livechat';
-import useIsLiveChatWidgetAvailable from '@/components/chat/useIsLiveChatWidgetAvailable';
 import { standalone_routes } from '@/components/shared';
 import { useFirebaseCountriesConfig } from '@/hooks/firebase/useFirebaseCountriesConfig';
-import useRemoteConfig from '@/hooks/growthbook/useRemoteConfig';
-import { useIsIntercomAvailable } from '@/hooks/useIntercom';
 import useThemeSwitcher from '@/hooks/useThemeSwitcher';
 import useTMB from '@/hooks/useTMB';
 import RootStore from '@/stores/root-store';
 import {
-    LegacyAccountLimitsIcon,
-    LegacyCashierIcon,
     LegacyChartsIcon,
-    LegacyHelpCentreIcon,
     LegacyHomeOldIcon,
     LegacyProfileSmIcon,
     LegacyReportsIcon,
-    LegacyResponsibleTradingIcon,
     LegacyTheme1pxIcon,
-    LegacyWhatsappIcon,
 } from '@deriv/quill-icons/Legacy';
 import { BrandDerivLogoCoralIcon } from '@deriv/quill-icons/Logo';
 import { useTranslations } from '@deriv-com/translations';
 import { ToggleSwitch } from '@deriv-com/ui';
-import { URLConstants } from '@deriv-com/utils';
 
 export type TSubmenuSection = 'accountSettings' | 'cashier' | 'reports';
 
@@ -44,12 +34,6 @@ type TMenuConfig = {
 const useMobileMenuConfig = (client?: RootStore['client']) => {
     const { localize } = useTranslations();
     const { is_dark_mode_on, toggleTheme } = useThemeSwitcher();
-
-    const { data } = useRemoteConfig(true);
-    const { cs_chat_whatsapp } = data;
-
-    const { is_livechat_available } = useIsLiveChatWidgetAvailable();
-    const icAvailable = useIsIntercomAvailable();
 
     // Get current account information for dependency tracking
     const is_virtual = client?.is_virtual;
@@ -126,13 +110,7 @@ const useMobileMenuConfig = (client?: RootStore['client']) => {
                     label: localize('Account Settings'),
                     LeftComponent: LegacyProfileSmIcon,
                 },
-                !has_wallet &&
-                    !is_hub_enabled_country && {
-                        as: 'a',
-                        href: standalone_routes.cashier_deposit,
-                        label: localize('Cashier'),
-                        LeftComponent: LegacyCashierIcon,
-                    },
+
                 client?.is_logged_in && {
                     as: 'button',
                     label: localize('Reports'),
@@ -147,45 +125,7 @@ const useMobileMenuConfig = (client?: RootStore['client']) => {
                     RightComponent: <ToggleSwitch value={is_dark_mode_on} onChange={toggleTheme} />,
                 },
             ].filter(Boolean) as TMenuConfig,
-            [
-                {
-                    as: 'a',
-                    href: standalone_routes.help_center,
-                    label: localize('Help center'),
-                    LeftComponent: LegacyHelpCentreIcon,
-                },
-                {
-                    as: 'a',
-                    href: standalone_routes.account_limits,
-                    label: localize('Account limits'),
-                    LeftComponent: LegacyAccountLimitsIcon,
-                },
-                {
-                    as: 'a',
-                    href: standalone_routes.responsible,
-                    label: localize('Responsible trading'),
-                    LeftComponent: LegacyResponsibleTradingIcon,
-                },
-                cs_chat_whatsapp
-                    ? {
-                          as: 'a',
-                          href: URLConstants.whatsApp,
-                          label: localize('WhatsApp'),
-                          LeftComponent: LegacyWhatsappIcon,
-                          target: '_blank',
-                      }
-                    : null,
-                is_livechat_available || icAvailable
-                    ? {
-                          as: 'button',
-                          label: localize('Live chat'),
-                          LeftComponent: Livechat,
-                          onClick: () => {
-                              icAvailable ? window.Intercom('show') : window.LiveChatWidget?.call('maximize');
-                          },
-                      }
-                    : null,
-            ].filter(Boolean) as TMenuConfig,
+            [],
             // Logout button removed from mobile interface as per acceptance criteria
             [],
         ],

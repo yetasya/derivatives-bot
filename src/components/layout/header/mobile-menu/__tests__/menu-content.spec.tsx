@@ -10,8 +10,6 @@ jest.mock('@deriv-com/ui', () => ({
     useDevice: jest.fn(() => ({ isDesktop: false })),
 }));
 
-jest.mock('../../platform-switcher', () => jest.fn(() => <div>Mock Platform Switcher</div>));
-
 describe('MenuContent Component', () => {
     const mock_store = mockStore(mock_ws as any);
 
@@ -28,9 +26,8 @@ describe('MenuContent Component', () => {
         });
     });
 
-    it('renders PlatformSwitcher and MenuItem components correctly', () => {
+    it('renders MenuItem components correctly', () => {
         render(<MenuContent />, { wrapper });
-        expect(screen.getByText(/Mock Platform Switcher/)).toBeInTheDocument();
         expect(screen.getByText(/Trader's Hub/)).toBeInTheDocument();
         expect(screen.getByText(/Deriv.com/)).toBeInTheDocument();
     });

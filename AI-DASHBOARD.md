@@ -3,7 +3,7 @@
 <div align="center">
 
 **deriv-com/derivatives-bot**
-📅 Last updated: 2025-08-19 10:05:04 UTC • 🔄 Tracking merged PRs to main/master
+📅 Last updated: 2025-08-20 06:44:20 UTC • 🔄 Tracking merged PRs to main/master
 
 </div>
 
@@ -11,26 +11,28 @@
 
 ## 📊 Quick Stats
 
-| Metric | Value | Metric | Value |
-|--------|-------|--------|-------|
-| **📁 Total Merged PRs** | 6 | **📈 Average AI Code** | ⬜⬜⬜⬜⬜⬜⬜⬜⬜⬜ 0% |
-| **🤖 PRs with AI Analysis** | 4 | **🎯 Overall AI Percentage** | ⬜⬜⬜⬜⬜⬜⬜⬜⬜⬜ 0% |
-| **📄 Files Analyzed** | 13 | **⚡ Total AI Characters** | 0 |
+| Metric                      | Value | Metric                       | Value                   |
+| --------------------------- | ----- | ---------------------------- | ----------------------- |
+| **📁 Total Merged PRs**     | 8     | **📈 Average AI Code**       | 🟥⬜⬜⬜⬜⬜⬜⬜⬜⬜ 9% |
+| **🤖 PRs with AI Analysis** | 5     | **🎯 Overall AI Percentage** | ⬜⬜⬜⬜⬜⬜⬜⬜⬜⬜ 3% |
+| **📄 Files Analyzed**       | 22    | **⚡ Total AI Characters**   | 992                     |
 
 ---
 
 ## 🚀 Recent Merged Pull Requests
 
-> 📊 Showing the 10 most recent merged PRs (stats above include all 6 PRs)
+> 📊 Showing the 10 most recent merged PRs (stats above include all 8 PRs)
 
-| PR | Author | Date | Files | AI Content | Percentage |
-|----|--------|------|-------|------------|------------|
-| [#2](#) **Matin/Update CODEOWNERS file and GH Workflows** | [@matin-deriv](https://github.com/matin-deriv) | 8/19/2025 | N/A | No data | ⬜⬜⬜⬜⬜⬜⬜⬜⬜⬜⬜⬜⬜⬜⬜   0% |
-| [#551](#) **chore: update shiftai-cli version** | [@prince-deriv](https://github.com/prince-deriv) | 8/18/2025 | 4 | 0 / 689 chars | ⬜⬜⬜⬜⬜⬜⬜⬜⬜⬜⬜⬜⬜⬜⬜   0% |
-| [#545](#) **chore: update shiftai-cli version** | [@prince-deriv](https://github.com/prince-deriv) | 8/18/2025 | 2 | 0 / 413 chars | ⬜⬜⬜⬜⬜⬜⬜⬜⬜⬜⬜⬜⬜⬜⬜   0% |
-| [#543](#) **Prince/ added githooks shiftai** | [@prince-deriv](https://github.com/prince-deriv) | 8/18/2025 | 5 | 0 / 27,276 chars | ⬜⬜⬜⬜⬜⬜⬜⬜⬜⬜⬜⬜⬜⬜⬜   0% |
-| [#536](#) **Rupato/fix  self exclusion** | [@rupato-deriv](https://github.com/rupato-deriv) | 8/14/2025 | 2 | 0 / 850 chars | ⬜⬜⬜⬜⬜⬜⬜⬜⬜⬜⬜⬜⬜⬜⬜   0% |
-| [#533](#) **Prince/ added ai analysis workflows** | [@prince-deriv](https://github.com/prince-deriv) | 8/6/2025 | N/A | No data | ⬜⬜⬜⬜⬜⬜⬜⬜⬜⬜⬜⬜⬜⬜⬜   0% |
+| PR                                                        | Author                                           | Date      | Files | AI Content        | Percentage                         |
+| --------------------------------------------------------- | ------------------------------------------------ | --------- | ----- | ----------------- | ---------------------------------- |
+| [#6](#) **Claude Code**                                   | [@ashkan-deriv](https://github.com/ashkan-deriv) | 8/20/2025 | N/A   | No data           | ⬜⬜⬜⬜⬜⬜⬜⬜⬜⬜⬜⬜⬜⬜⬜ 0%  |
+| [#1](#) **Prince/ MVP Cleanup **                          | [@prince-deriv](https://github.com/prince-deriv) | 8/20/2025 | 9     | 992 / 2,161 chars | 🟧🟧🟧🟧🟧🟧🟧⬜⬜⬜⬜⬜⬜⬜⬜ 46% |
+| [#2](#) **Matin/Update CODEOWNERS file and GH Workflows** | [@matin-deriv](https://github.com/matin-deriv)   | 8/19/2025 | N/A   | No data           | ⬜⬜⬜⬜⬜⬜⬜⬜⬜⬜⬜⬜⬜⬜⬜ 0%  |
+| [#551](#) **chore: update shiftai-cli version**           | [@prince-deriv](https://github.com/prince-deriv) | 8/18/2025 | 4     | 0 / 689 chars     | ⬜⬜⬜⬜⬜⬜⬜⬜⬜⬜⬜⬜⬜⬜⬜ 0%  |
+| [#545](#) **chore: update shiftai-cli version**           | [@prince-deriv](https://github.com/prince-deriv) | 8/18/2025 | 2     | 0 / 413 chars     | ⬜⬜⬜⬜⬜⬜⬜⬜⬜⬜⬜⬜⬜⬜⬜ 0%  |
+| [#543](#) **Prince/ added githooks shiftai**              | [@prince-deriv](https://github.com/prince-deriv) | 8/18/2025 | 5     | 0 / 27,276 chars  | ⬜⬜⬜⬜⬜⬜⬜⬜⬜⬜⬜⬜⬜⬜⬜ 0%  |
+| [#536](#) **Rupato/fix self exclusion**                   | [@rupato-deriv](https://github.com/rupato-deriv) | 8/14/2025 | 2     | 0 / 850 chars     | ⬜⬜⬜⬜⬜⬜⬜⬜⬜⬜⬜⬜⬜⬜⬜ 0%  |
+| [#533](#) **Prince/ added ai analysis workflows**         | [@prince-deriv](https://github.com/prince-deriv) | 8/6/2025  | N/A   | No data           | ⬜⬜⬜⬜⬜⬜⬜⬜⬜⬜⬜⬜⬜⬜⬜ 0%  |
 
 ---
 
