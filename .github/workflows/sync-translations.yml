@@ -1,12 +1,13 @@
 name: Sync translations
 
-on:
-  push:
-    branches:
-      - master
-  schedule:
-    - cron: '0 */12 * * *'
-  workflow_dispatch:
+# Temporarily disabled until we set up the workflow and Crowdin project
+# on:
+#   push:
+#     branches:
+#       - master
+#   schedule:
+#     - cron: '0 */12 * * *'
+#   workflow_dispatch:
         
 jobs:
   sync_translations:
