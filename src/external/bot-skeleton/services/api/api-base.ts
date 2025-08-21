@@ -220,7 +220,6 @@ class APIBase {
 
             this.account_info = authorize;
 
-            // [AI]
             const currentAccount = authorize?.loginid
                 ? {
                       balance: authorize.balance,
@@ -229,8 +228,6 @@ class APIBase {
                       loginid: authorize.loginid,
                   }
                 : null;
-
-            // [AI]
 
             const accountList = currentAccount ? [currentAccount] : [];
 
