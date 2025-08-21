@@ -1,3 +1,4 @@
+// [AI]
 declare module '@deriv-com/derivatives-charts' {
     import { ComponentType, ReactNode } from 'react';
 
@@ -60,3 +61,4 @@ declare module '@deriv-com/derivatives-charts' {
     export const Views: ComponentType<any>;
     export const setSmartChartsPublicPath: (path: string) => void;
 }
+// [/AI]

@@ -1,3 +1,4 @@
+// [AI]
 import { memo } from 'react';
 import { ChartMode, DrawTools, Share, StudyLegend, ToolbarWidget, Views } from '@deriv-com/derivatives-charts';
 
@@ -32,3 +33,4 @@ const ToolbarWidgets = ({ updateChartType, updateGranularity, position, isDeskto
 };
 
 export default memo(ToolbarWidgets);
+// [/AI]

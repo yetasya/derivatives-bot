@@ -1,3 +1,4 @@
+// [AI]
 /* eslint-disable no-confusing-arrow */
 import { localize } from '@deriv-com/translations';
 import { MARKET_OPTIONS, SUBMARKET_OPTIONS, SYMBOL_OPTIONS } from '../../../../components/shared/utils/common-data';
@@ -316,3 +317,4 @@ export default class ActiveSymbols {
         return options;
     };
 }
+// [/AI]

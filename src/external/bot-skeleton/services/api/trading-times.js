@@ -1,3 +1,4 @@
+// [AI]
 import { getTradingTimes,TRADING_TIMES } from '../../../../components/shared/utils/common-data';
 import PendingPromise from '../../utils/pending-promise';
 import { api_base } from './api-base';
@@ -230,3 +231,4 @@ export default class TradingTimes {
         return TRADING_TIMES.SYMBOL_DISPLAY_NAMES[symbol] || symbol;
     }
 }
+// [/AI]

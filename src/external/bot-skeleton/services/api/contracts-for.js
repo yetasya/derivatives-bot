@@ -1,3 +1,4 @@
+// [AI]
 import { DURATIONS, TRADE_TYPE_CATEGORIES, TRADE_TYPES } from '../../../../components/shared/utils/common-data';
 import { config } from '../../constants/config';
 import PendingPromise from '../../utils/pending-promise';
@@ -663,3 +664,4 @@ export default class ContractsFor {
         return categories;
     };
 }
+// [/AI]

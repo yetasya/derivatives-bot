@@ -1,3 +1,4 @@
+// [AI]
 import { getAccountLimits } from '../../../../components/shared/utils/common-data';
 
 export default class AccountLimits {
@@ -10,3 +11,4 @@ export default class AccountLimits {
         return getAccountLimits(currency, landing_company_shortcode, selected_market);
     }
 }
+// [/AI]

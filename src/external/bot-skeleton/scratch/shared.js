@@ -1,3 +1,4 @@
+// [AI]
 import filesaver from 'file-saver';
 import { getContractTypeOptions as getContractTypeOptionsFromCommon } from '../../../components/shared/utils/common-data';
 import { config } from '../constants/config';
@@ -27,3 +28,4 @@ export const getContractTypeOptions = (contract_type, trade_type) => {
     // Fallback to common data
     return getContractTypeOptionsFromCommon(contract_type, trade_type);
 };
+// [/AI]
