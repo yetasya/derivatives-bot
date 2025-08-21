@@ -664,4 +664,5 @@
 .account-switcher-fixed {
     pointer-events: none !important;
     cursor: default !important;
+    border-inline-end: 1px solid var(--general-section-1);
 }
