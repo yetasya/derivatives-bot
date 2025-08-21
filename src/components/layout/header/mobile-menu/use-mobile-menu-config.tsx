@@ -3,6 +3,7 @@ import { standalone_routes } from '@/components/shared';
 import useThemeSwitcher from '@/hooks/useThemeSwitcher';
 import useTMB from '@/hooks/useTMB';
 import RootStore from '@/stores/root-store';
+import { BrandDerivLogoCoralIcon } from '@deriv/quill-icons';
 import {
     LegacyHomeOldIcon,
     LegacyLogout1pxIcon,
@@ -44,6 +45,12 @@ const useMobileMenuConfig = (client?: RootStore['client']) => {
     const menuConfig = useMemo(
         (): TMenuConfig[] => [
             [
+                {
+                    as: 'a',
+                    href: standalone_routes.deriv_com,
+                    label: localize('Deriv.com'),
+                    LeftComponent: BrandDerivLogoCoralIcon,
+                },
                 is_logged_in && {
                     as: 'a',
                     href: standalone_routes.deriv_app,
