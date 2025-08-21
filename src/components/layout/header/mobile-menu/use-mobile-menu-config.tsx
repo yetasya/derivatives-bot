@@ -9,7 +9,6 @@ import {
     LegacyReportsIcon,
     LegacyTheme1pxIcon,
 } from '@deriv/quill-icons/Legacy';
-import { BrandDerivLogoCoralIcon } from '@deriv/quill-icons/Logo';
 import { useTranslations } from '@deriv-com/translations';
 import { ToggleSwitch } from '@deriv-com/ui';
 
@@ -45,13 +44,7 @@ const useMobileMenuConfig = (client?: RootStore['client']) => {
     const menuConfig = useMemo(
         (): TMenuConfig[] => [
             [
-                {
-                    as: 'a',
-                    href: standalone_routes.deriv_com,
-                    label: localize('Deriv.com'),
-                    LeftComponent: BrandDerivLogoCoralIcon,
-                },
-                {
+                is_logged_in && {
                     as: 'a',
                     href: standalone_routes.deriv_app,
                     label: localize('Hub'),
