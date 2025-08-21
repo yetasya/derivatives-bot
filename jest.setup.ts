@@ -41,3 +41,11 @@ Object.defineProperty(window, 'matchMedia', {
         removeListener: jest.fn(),
     })),
 });
+
+// Mock fetch for tests
+global.fetch = jest.fn(() =>
+    Promise.resolve({
+        ok: true,
+        json: () => Promise.resolve({ is_tmb_enabled: false }),
+    })
+) as jest.Mock;
