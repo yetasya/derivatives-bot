@@ -59,15 +59,21 @@ export default defineConfig({
     output: {
         copy: [
             {
-                from: 'node_modules/@deriv/deriv-charts/dist/*',
+                from: 'node_modules/@deriv-com/derivatives-charts/dist/*',
                 to: 'js/smartcharts/[name][ext]',
                 globOptions: {
                     ignore: ['**/*.LICENSE.txt'],
                 },
             },
-            { from: 'node_modules/@deriv/deriv-charts/dist/chart/assets/*', to: 'assets/[name][ext]' },
-            { from: 'node_modules/@deriv/deriv-charts/dist/chart/assets/fonts/*', to: 'assets/fonts/[name][ext]' },
-            { from: 'node_modules/@deriv/deriv-charts/dist/chart/assets/shaders/*', to: 'assets/shaders/[name][ext]' },
+            { from: 'node_modules/@deriv-com/derivatives-charts/dist/chart/assets/*', to: 'assets/[name][ext]' },
+            {
+                from: 'node_modules/@deriv-com/derivatives-charts/dist/chart/assets/fonts/*',
+                to: 'assets/fonts/[name][ext]',
+            },
+            {
+                from: 'node_modules/@deriv-com/derivatives-charts/dist/chart/assets/shaders/*',
+                to: 'assets/shaders/[name][ext]',
+            },
             { from: path.join(__dirname, 'public') },
         ],
     },

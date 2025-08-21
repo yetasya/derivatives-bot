@@ -1,3 +1,4 @@
+import { DURATIONS, TRADE_TYPE_CATEGORIES, TRADE_TYPES } from '../../../../components/shared/utils/common-data';
 import { config } from '../../constants/config';
 import PendingPromise from '../../utils/pending-promise';
 import { api_base } from './api-base';
@@ -190,6 +191,11 @@ export default class ContractsFor {
             return [];
         }
 
+        // Check if API is available
+        if (!api_base.api) {
+            return [];
+        }
+
         const getContractsForFromApi = async () => {
             if (this.retrieving_contracts_for[symbol]) {
                 await this.retrieving_contracts_for[symbol];
@@ -197,28 +203,44 @@ export default class ContractsFor {
             }
 
             this.retrieving_contracts_for[symbol] = new PendingPromise();
-            const response = await api_base.api.send({ contracts_for: symbol });
 
-            if (response.error) {
+            try {
+                const response = await api_base.api.send({ contracts_for: symbol });
+
+                if (response.error) {
+                    this.retrieving_contracts_for[symbol].resolve();
+                    delete this.retrieving_contracts_for[symbol];
+                    return [];
+                }
+
+                if (!response.contracts_for || !response.contracts_for.available) {
+                    this.retrieving_contracts_for[symbol].resolve();
+                    delete this.retrieving_contracts_for[symbol];
+                    return [];
+                }
+
+                const {
+                    contracts_for: { available: contracts },
+                } = response;
+
+                // We don't offer forward-starting contracts in bot.
+                const filtered_contracts = contracts.filter(c => c.start_type !== 'forward');
+
+                this.contracts_for[symbol] = {
+                    contracts: filtered_contracts,
+                    timestamp: this.server_time.unix(),
+                };
+
+                this.retrieving_contracts_for[symbol].resolve();
+                delete this.retrieving_contracts_for[symbol];
+
+                return filtered_contracts;
+            } catch (error) {
+                console.error('DEBUG: Error in contracts_for API call:', error);
+                this.retrieving_contracts_for[symbol].resolve();
+                delete this.retrieving_contracts_for[symbol];
                 return [];
             }
-
-            const {
-                contracts_for: { available: contracts },
-            } = response;
-
-            // We don't offer forward-starting contracts in bot.
-            const filtered_contracts = contracts.filter(c => c.start_type !== 'forward');
-
-            this.contracts_for[symbol] = {
-                contracts: filtered_contracts,
-                timestamp: this.server_time.unix(),
-            };
-
-            this.retrieving_contracts_for[symbol].resolve();
-            delete this.retrieving_contracts_for[symbol];
-
-            return filtered_contracts;
         };
 
         if (this.contracts_for[symbol]) {
@@ -226,12 +248,11 @@ export default class ContractsFor {
             const is_expired = this.server_time.unix() - timestamp > this.cache_age_in_min * 60;
 
             if (is_expired) {
-                getContractsForFromApi();
+                return getContractsForFromApi();
             }
 
             return contracts;
         }
-
         return getContractsForFromApi();
     }
 
@@ -241,10 +262,11 @@ export default class ContractsFor {
         }
 
         const contracts = await this.getContractsFor(symbol);
-        const { NOT_AVAILABLE_DURATIONS, DEFAULT_DURATION_DROPDOWN_OPTIONS } = config();
+        const { DEFAULT_DURATION_DROPDOWN_OPTIONS } = config();
 
+        // Duration fallbacks when no contracts available
         if (contracts.length === 0) {
-            return NOT_AVAILABLE_DURATIONS;
+            return DURATIONS;
         }
 
         const contracts_for_category = await this.getContractsByTradeType(symbol, trade_type);
@@ -314,9 +336,8 @@ export default class ContractsFor {
         }
 
         if (durations.length === 0) {
-            return NOT_AVAILABLE_DURATIONS;
+            return DURATIONS;
         }
-
         // Maintain order based on duration unit
         return durations.sort((a, b) => getDurationIndex(a.unit) - getDurationIndex(b.unit));
     }
@@ -544,7 +565,7 @@ export default class ContractsFor {
     }
 
     async getTradeTypeCategories(market, submarket, symbol) {
-        const { TRADE_TYPE_CATEGORY_NAMES, NOT_AVAILABLE_DROPDOWN_OPTIONS } = config();
+        const { TRADE_TYPE_CATEGORY_NAMES } = config();
         const contracts = await this.getContractsFor(symbol);
         const trade_type_categories = [];
 
@@ -581,7 +602,8 @@ export default class ContractsFor {
             });
         }
 
-        return NOT_AVAILABLE_DROPDOWN_OPTIONS;
+        // Fallback trade type categories
+        return TRADE_TYPE_CATEGORIES;
     }
 
     async getTradeTypes(market, submarket, symbol, trade_type_category) {
@@ -610,7 +632,12 @@ export default class ContractsFor {
             }
         }
 
-        return trade_types.length > 0 ? trade_types : config().NOT_AVAILABLE_DROPDOWN_OPTIONS;
+        // Fallback trade types based on category
+        if (trade_types.length === 0) {
+            return TRADE_TYPES[trade_type_category] || [['Default', 'callput']];
+        }
+
+        return trade_types;
     }
 
     isDisabledOption(compare_obj) {
