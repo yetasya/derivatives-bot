@@ -78,10 +78,10 @@ jobs:
                   echo "Deploying build to Cloudflare Pages"
                   directory='dist/'
                   projectName=$CLOUDFLARE_PROJECT_NAME
-                  branch=main
+                  branch=production
                   cf_preview_url=$(wrangler pages deploy $directory --project-name=$projectName --branch=$branch > log.txt 2>&1; echo $?)
                   echo "------"
-                  preview_url=https://$branch.$projectName.pages.dev
+                  preview_url=https://$projectName.pages.dev
                   cat log.txt
                   if grep -q "Deployment complete" log.txt; then
                     echo "preview_url=$preview_url" >> "$GITHUB_OUTPUT"
