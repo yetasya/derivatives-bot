@@ -220,21 +220,12 @@ class APIBase {
 
             this.account_info = authorize;
 
-            // Create account list from current account data with all required TAccount fields
             const currentAccount = authorize?.loginid
                 ? {
-                      loginid: authorize.loginid,
+                      balance: authorize.balance,
                       currency: authorize.currency || 'USD',
                       is_virtual: authorize.is_virtual || 0,
-                      // Required TAccount fields with defaults for new API
-                      account_category: authorize.is_virtual ? 'trading' : 'trading',
-                      account_type: authorize.is_virtual ? 'virtual' : 'financial',
-                      broker: 'MF', // Default broker
-                      created_at: Date.now() / 1000, // Current timestamp as default
-                      currency_type: authorize.is_virtual ? 'virtual' : 'fiat',
-                      is_disabled: 0,
-                      landing_company_name: 'maltainvest',
-                      linked_to: [],
+                      loginid: authorize.loginid,
                   }
                 : null;
 

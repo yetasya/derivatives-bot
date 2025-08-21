@@ -902,16 +902,9 @@ export type TLandingCompany = {
 };
 
 export type TAccount = {
-    account_category: string;
-    account_type: string;
-    broker: string;
-    created_at: number;
+    balance: number;
     currency: string;
-    currency_type: string;
-    is_disabled: number;
     is_virtual: number;
-    landing_company_name: string;
-    linked_to: Array<any>;
     loginid: string;
 };
 

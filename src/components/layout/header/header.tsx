@@ -32,8 +32,7 @@ const AppHeader = observer(({ isAuthenticating }: TAppHeaderProps) => {
         allBalanceData: client?.all_accounts_balance,
         directBalance: client?.balance,
     });
-    const { accounts, getCurrency, is_virtual } = client ?? {};
-    const has_wallet = Object.keys(accounts ?? {}).some(id => accounts?.[id].account_category === 'wallet');
+    const { getCurrency, is_virtual } = client ?? {};
 
     const currency = getCurrency?.();
     const { localize } = useTranslations();
@@ -119,7 +118,6 @@ const AppHeader = observer(({ isAuthenticating }: TAppHeaderProps) => {
         activeLoginid,
         standalone_routes,
         client,
-        has_wallet,
         currency,
         localize,
         activeAccount,
@@ -140,7 +138,7 @@ const AppHeader = observer(({ isAuthenticating }: TAppHeaderProps) => {
             <Wrapper variant='left'>
                 <AppLogo />
                 <MobileMenu />
-                {isDesktop && <MenuItems.TradershubLink />}
+                {isDesktop && client?.is_logged_in && <MenuItems.TradershubLink />}
                 {isDesktop && <MenuItems />}
             </Wrapper>
             <Wrapper variant='right'>{renderAccountSection()}</Wrapper>
