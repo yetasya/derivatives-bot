@@ -100,9 +100,9 @@ const AccountSwitcher = observer(({ activeAccount }: TAccountSwitcher) => {
             return {
                 ...account,
                 balance: addComma(
-                    client.all_accounts_balance?.accounts?.[account?.loginid]?.balance?.toFixed(
-                        getDecimalPlaces(account.currency)
-                    ) ?? '0'
+                    account?.loginid === client.loginid
+                        ? parseFloat(client.balance || '0').toFixed(getDecimalPlaces(account.currency))
+                        : parseFloat('0').toFixed(getDecimalPlaces(account.currency))
                 ),
                 currencyLabel: account?.is_virtual
                     ? tabs_labels.demo
@@ -140,7 +140,7 @@ const AccountSwitcher = observer(({ activeAccount }: TAccountSwitcher) => {
         const account_list = JSON.parse(localStorage.getItem('accountsList') ?? '{}');
         const token = account_list[loginId];
         if (!token) return;
-        localStorage.setItem('authToken', token);
+        localStorage.setItem('session_token', token);
         localStorage.setItem('active_loginid', loginId.toString());
         const account_type =
             loginId

@@ -28,7 +28,10 @@ const AppHeader = observer(({ isAuthenticating }: TAppHeaderProps) => {
     const { isAuthorizing, activeLoginid } = useApiBase();
     const { client } = useStore() ?? {};
 
-    const { data: activeAccount } = useActiveAccount({ allBalanceData: client?.all_accounts_balance });
+    const { data: activeAccount } = useActiveAccount({
+        allBalanceData: client?.all_accounts_balance,
+        directBalance: client?.balance,
+    });
     const { accounts, getCurrency, is_virtual } = client ?? {};
     const has_wallet = Object.keys(accounts ?? {}).some(id => accounts?.[id].account_category === 'wallet');
 
@@ -49,6 +52,17 @@ const AppHeader = observer(({ isAuthenticating }: TAppHeaderProps) => {
             return (
                 <>
                     <AccountSwitcher activeAccount={activeAccount} />
+                    {isDesktop && (
+                        <Button
+                            className='header__logout-button'
+                            onClick={() => {
+                                client?.logout?.();
+                            }}
+                            tertiary
+                        >
+                            <Localize i18n_default_text='Log out' />
+                        </Button>
+                    )}
                 </>
             );
         } else {
@@ -93,14 +107,6 @@ const AppHeader = observer(({ isAuthenticating }: TAppHeaderProps) => {
                         }}
                     >
                         <Localize i18n_default_text='Log in' />
-                    </Button>
-                    <Button
-                        primary
-                        onClick={() => {
-                            window.open(standalone_routes.signup);
-                        }}
-                    >
-                        <Localize i18n_default_text='Sign up' />
                     </Button>
                 </div>
             );

@@ -6,7 +6,13 @@ import { Balance } from '@deriv/api-types';
 import { localize } from '@deriv-com/translations';
 
 /** A custom hook that returns the account object for the current active account. */
-const useActiveAccount = ({ allBalanceData }: { allBalanceData: Balance | null }) => {
+const useActiveAccount = ({
+    allBalanceData,
+    directBalance,
+}: {
+    allBalanceData: Balance | null;
+    directBalance?: string;
+}) => {
     const { accountList, activeLoginid } = useApiBase();
 
     const activeAccount = useMemo(
@@ -20,9 +26,11 @@ const useActiveAccount = ({ allBalanceData }: { allBalanceData: Balance | null }
         return activeAccount
             ? {
                   ...activeAccount,
-                  balance:
-                      addComma(currentBalanceData?.balance?.toFixed(getDecimalPlaces(currentBalanceData.currency))) ??
-                      '0',
+                  balance: currentBalanceData?.balance
+                      ? addComma(currentBalanceData.balance.toFixed(getDecimalPlaces(currentBalanceData.currency)))
+                      : directBalance
+                        ? addComma(parseFloat(directBalance).toFixed(getDecimalPlaces(activeAccount.currency)))
+                        : addComma(parseFloat('0').toFixed(getDecimalPlaces(activeAccount.currency))), // [AI] Format zero with proper decimals
                   currencyLabel: activeAccount?.is_virtual ? localize('Demo') : activeAccount?.currency,
                   icon: (
                       <CurrencyIcon
@@ -35,7 +43,7 @@ const useActiveAccount = ({ allBalanceData }: { allBalanceData: Balance | null }
               }
             : undefined;
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [activeAccount, activeLoginid, allBalanceData]);
+    }, [activeAccount, activeLoginid, allBalanceData, directBalance]);
 
     return {
         /** User's current active account. */

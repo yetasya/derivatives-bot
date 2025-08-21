@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useMemo, useRef } from 'react';
 import Cookies from 'js-cookie';
 import { observer } from 'mobx-react-lite';
-import { getDecimalPlaces, toMoment } from '@/components/shared';
+import { toMoment } from '@/components/shared';
 import { FORM_ERROR_MESSAGES } from '@/components/shared/constants/form-error-messages';
 import { initFormErrorMessages } from '@/components/shared/utils/validation/declarative-validation-rules';
 import { api_base } from '@/external/bot-skeleton';
@@ -56,16 +56,6 @@ const CoreStoreProvider: React.FC<{ children: React.ReactNode }> = observer(({ c
         () => accountList?.find(account => account.loginid === activeLoginid),
         [activeLoginid, accountList]
     );
-
-    useEffect(() => {
-        const currentBalanceData = client?.all_accounts_balance?.accounts?.[activeAccount?.loginid ?? ''];
-        if (currentBalanceData) {
-            client?.setBalance(currentBalanceData.balance.toFixed(getDecimalPlaces(currentBalanceData.currency)));
-            client?.setCurrency(currentBalanceData.currency);
-        }
-
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [activeAccount?.loginid, client?.all_accounts_balance]);
 
     useEffect(() => {
         if (client && activeAccount) {
@@ -130,22 +120,12 @@ const CoreStoreProvider: React.FC<{ children: React.ReactNode }> = observer(({ c
 
             if (msg_type === 'balance' && data && !error) {
                 const balance = data.balance;
-                if (balance?.accounts) {
-                    client.setAllAccountsBalance(balance);
-                } else if (balance?.loginid) {
-                    if (!client?.all_accounts_balance?.accounts || !balance?.loginid) return;
-                    const accounts = { ...client.all_accounts_balance.accounts };
-                    const currentLoggedInBalance = { ...accounts[balance.loginid] };
-                    currentLoggedInBalance.balance = balance.balance;
+                if (balance && typeof balance.balance === 'number') {
+                    client.setBalance(balance.balance.toString());
 
-                    const updatedAccounts = {
-                        ...client.all_accounts_balance,
-                        accounts: {
-                            ...client.all_accounts_balance.accounts,
-                            [balance.loginid]: currentLoggedInBalance,
-                        },
-                    };
-                    client.setAllAccountsBalance(updatedAccounts);
+                    if (balance.currency) {
+                        client.setCurrency(balance.currency);
+                    }
                 }
             }
         },

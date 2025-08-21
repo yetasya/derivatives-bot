@@ -1,13 +1,11 @@
 import { ComponentProps, ReactNode, useMemo } from 'react';
 import { standalone_routes } from '@/components/shared';
-import { useFirebaseCountriesConfig } from '@/hooks/firebase/useFirebaseCountriesConfig';
 import useThemeSwitcher from '@/hooks/useThemeSwitcher';
 import useTMB from '@/hooks/useTMB';
 import RootStore from '@/stores/root-store';
 import {
-    LegacyChartsIcon,
     LegacyHomeOldIcon,
-    LegacyProfileSmIcon,
+    LegacyLogout1pxIcon,
     LegacyReportsIcon,
     LegacyTheme1pxIcon,
 } from '@deriv/quill-icons/Legacy';
@@ -40,47 +38,9 @@ const useMobileMenuConfig = (client?: RootStore['client']) => {
     const currency = client?.getCurrency?.();
     const is_logged_in = client?.is_logged_in;
     const client_residence = client?.residence;
-    const accounts = client?.accounts || {};
+
     const { isTmbEnabled } = useTMB();
     const is_tmb_enabled = window.is_tmb_enabled || isTmbEnabled();
-
-    const { hubEnabledCountryList } = useFirebaseCountriesConfig();
-
-    // Function to add account parameter to URLs
-    const getAccountUrl = (url: string) => {
-        try {
-            const redirect_url = new URL(url);
-            // Check if the account is a demo account
-            // Use the URL parameter to determine if it's a demo account, as this will update when the account changes
-            const urlParams = new URLSearchParams(window.location.search);
-            const account_param = urlParams.get('account');
-            const is_virtual = client?.is_virtual || account_param === 'demo';
-            const currency = client?.getCurrency?.();
-
-            if (is_virtual) {
-                // For demo accounts, set the account parameter to 'demo'
-                redirect_url.searchParams.set('account', 'demo');
-            } else if (currency) {
-                // For real accounts, set the account parameter to the currency
-                redirect_url.searchParams.set('account', currency);
-            }
-
-            return redirect_url.toString();
-        } catch (error) {
-            return url;
-        }
-    };
-
-    const has_wallet = Object.keys(accounts).some(id => accounts[id].account_category === 'wallet');
-    const is_hub_enabled_country = hubEnabledCountryList.includes(client?.residence || '');
-    // Determine the appropriate redirect URL based on user's country
-    const getRedirectUrl = () => {
-        // Check if the user's country is in the hub-enabled country list
-        if (has_wallet && is_hub_enabled_country) {
-            return getAccountUrl(standalone_routes.account_settings);
-        }
-        return getAccountUrl(standalone_routes.personal_details);
-    };
 
     const menuConfig = useMemo(
         (): TMenuConfig[] => [
@@ -94,23 +54,9 @@ const useMobileMenuConfig = (client?: RootStore['client']) => {
                 {
                     as: 'a',
                     href: standalone_routes.deriv_app,
-                    label: localize("Trader's Hub"),
+                    label: localize('Hub'),
                     LeftComponent: LegacyHomeOldIcon,
                 },
-                {
-                    as: 'a',
-                    href: standalone_routes.bot,
-                    label: localize('Trade'),
-                    LeftComponent: LegacyChartsIcon,
-                    isActive: true, // Always highlight Trade as active
-                },
-                {
-                    as: 'a',
-                    href: getRedirectUrl(),
-                    label: localize('Account Settings'),
-                    LeftComponent: LegacyProfileSmIcon,
-                },
-
                 client?.is_logged_in && {
                     as: 'button',
                     label: localize('Reports'),
@@ -124,12 +70,23 @@ const useMobileMenuConfig = (client?: RootStore['client']) => {
                     LeftComponent: LegacyTheme1pxIcon,
                     RightComponent: <ToggleSwitch value={is_dark_mode_on} onChange={toggleTheme} />,
                 },
+                ...(is_logged_in
+                    ? [
+                          {
+                              as: 'button' as const,
+                              label: localize('Log out'),
+                              LeftComponent: LegacyLogout1pxIcon,
+                              onClick: () => {
+                                  client?.logout?.();
+                              },
+                          },
+                      ]
+                    : []),
             ].filter(Boolean) as TMenuConfig,
             [],
-            // Logout button removed from mobile interface as per acceptance criteria
             [],
         ],
-        [is_virtual, currency, is_logged_in, client_residence, is_tmb_enabled]
+        [is_virtual, currency, is_logged_in, client_residence, is_tmb_enabled, client]
     );
 
     return {
