@@ -1,7 +1,363 @@
 {
-  "lastUpdated": "2025-08-18T14:15:54.988Z",
-  "totalMergedPRs": 5,
+  "lastUpdated": "2025-08-21T09:11:49.719Z",
+  "totalMergedPRs": 14,
   "analyses": [
+    {
+      "percentage": 0,
+      "totalCharacters": 351,
+      "aiCharacters": 0,
+      "files": [
+        {
+          "name": "package-lock.json",
+          "totalCharacters": 308,
+          "aiCharacters": 0,
+          "percentage": 0,
+          "status": "modified",
+          "hasAddedContent": true,
+          "addedContent": "                \"@deriv-com/shiftai-cli\": \"^0.0.6\",\n            \"version\": \"0.0.6\",\n            \"resolved\": \"https://registry.npmjs.org/@deriv-com/shiftai-cli/-/shiftai-cli-0.0.6.tgz\",\n            \"integrity\": \"sha512-T5J4fNn3hM/nNAQyzL4yN2jWr0+xRlb7dsecPzX1lmPL/8vG4RfxPPSq7Ye+TMhi8W64NGalWZdlVx/bTJdiEg==\","
+        },
+        {
+          "name": "package.json",
+          "totalCharacters": 43,
+          "aiCharacters": 0,
+          "percentage": 0,
+          "status": "modified",
+          "hasAddedContent": true,
+          "addedContent": "        \"@deriv-com/shiftai-cli\": \"^0.0.6\","
+        }
+      ],
+      "timestamp": "2025-08-21T09:11:49.671Z",
+      "repository": "deriv-com/derivatives-bot",
+      "pullRequest": "19",
+      "branch": "update-shiftai-cli-version",
+      "author": "prince-deriv",
+      "prTitle": "Prince/update shai version",
+      "hasAnalysis": true
+    },
+    {
+      "percentage": 84,
+      "totalCharacters": 425,
+      "aiCharacters": 357,
+      "files": [
+        {
+          "name": "jest.setup.ts",
+          "totalCharacters": 180,
+          "aiCharacters": 149,
+          "percentage": 83,
+          "status": "modified",
+          "hasAddedContent": true,
+          "addedContent": "\n// Mock fetch for tests\nglobal.fetch = jest.fn(() =>\n    Promise.resolve({\n        ok: true,\n        json: () => Promise.resolve({ is_tmb_enabled: false }),\n    })\n) as jest.Mock;"
+        },
+        {
+          "name": "src/components/layout/header/mobile-menu/__tests__/menu-content.spec.tsx",
+          "totalCharacters": 245,
+          "aiCharacters": 208,
+          "percentage": 85,
+          "status": "modified",
+          "hasAddedContent": true,
+          "addedContent": "    // Mock client as logged in to show Hub link\n    mock_store.client.is_logged_in = true;\n\n        expect(screen.getByText(/Hub/)).toBeInTheDocument();\n        const text = screen.getByText(/Hub/);\n        const text = screen.getByText(/Hub/);"
+        }
+      ],
+      "timestamp": "2025-08-21T07:51:25.997Z",
+      "repository": "deriv-com/derivatives-bot",
+      "pullRequest": "17",
+      "branch": "fix-test-issues",
+      "author": "prince-deriv",
+      "prTitle": "Prince/ Fix test issues",
+      "hasAnalysis": true
+    },
+    {
+      "timestamp": "2025-08-21T05:27:09.045Z",
+      "repository": "deriv-com/derivatives-bot",
+      "pullRequest": "14",
+      "branch": "matin/gh_workflows_cleanup",
+      "author": "matin-deriv",
+      "prTitle": "chore: Clean-up GH Workflows for Staging & Production Deployments",
+      "hasAnalysis": false,
+      "percentage": 0,
+      "totalCharacters": 0,
+      "aiCharacters": 0,
+      "files": []
+    },
+    {
+      "percentage": 31,
+      "totalCharacters": 8622,
+      "aiCharacters": 2649,
+      "files": [
+        {
+          "name": "src/app/CoreStoreProvider.tsx",
+          "totalCharacters": 313,
+          "aiCharacters": 160,
+          "percentage": 51,
+          "status": "modified",
+          "hasAddedContent": true,
+          "addedContent": "import { toMoment } from '@/components/shared';\n                if (balance && typeof balance.balance === 'number') {\n                    client.setBalance(balance.balance.toString());\n\n                    if (balance.currency) {\n                        client.setCurrency(balance.currency);\n                    }"
+        },
+        {
+          "name": "src/components/layout/header/AccountSwitcherWallet/account-switcher-wallet-item.tsx",
+          "totalCharacters": 57,
+          "aiCharacters": 0,
+          "percentage": 0,
+          "status": "modified",
+          "hasAddedContent": true,
+          "addedContent": "            localStorage.setItem('session_token', token);"
+        },
+        {
+          "name": "src/components/layout/header/AccountSwitcherWallet/account-switcher-wallet-mobile.tsx",
+          "totalCharacters": 146,
+          "aiCharacters": 0,
+          "percentage": 0,
+          "status": "modified",
+          "hasAddedContent": true,
+          "addedContent": "import { handleTraderHubRedirect } from '@/utils/traders-hub-redirect';\n    ({ is_visible, toggle, residence }: TAccountSwitcherWalletMobile) => {"
+        },
+        {
+          "name": "src/components/layout/header/account-switcher.tsx",
+          "totalCharacters": 299,
+          "aiCharacters": 176,
+          "percentage": 59,
+          "status": "modified",
+          "hasAddedContent": true,
+          "addedContent": "                    account?.loginid === client.loginid\n                        ? parseFloat(client.balance || '0').toFixed(getDecimalPlaces(account.currency))\n                        : parseFloat('0').toFixed(getDecimalPlaces(account.currency))\n        localStorage.setItem('session_token', token);"
+        },
+        {
+          "name": "src/components/layout/header/header.tsx",
+          "totalCharacters": 603,
+          "aiCharacters": 127,
+          "percentage": 21,
+          "status": "modified",
+          "hasAddedContent": true,
+          "addedContent": "    const { data: activeAccount } = useActiveAccount({\n        allBalanceData: client?.all_accounts_balance,\n        directBalance: client?.balance,\n    });\n                    {isDesktop && (\n                        <Button\n                            className='header__logout-button'\n                            onClick={() => {\n                                client?.logout?.();\n                            }}\n                            tertiary\n                        >\n                      ..."
+        },
+        {
+          "name": "src/components/layout/header/mobile-menu/use-mobile-menu-config.tsx",
+          "totalCharacters": 632,
+          "aiCharacters": 145,
+          "percentage": 23,
+          "status": "modified",
+          "hasAddedContent": true,
+          "addedContent": "    LegacyLogout1pxIcon,\n\n                    label: localize('Hub'),\n                ...(is_logged_in\n                    ? [\n                          {\n                              as: 'button' as const,\n                              label: localize('Log out'),\n                              LeftComponent: LegacyLogout1pxIcon,\n                              onClick: () => {\n                                  client?.logout?.();\n                              },\n                          },\n     ..."
+        },
+        {
+          "name": "src/external/bot-skeleton/services/api/api-base.ts",
+          "totalCharacters": 3843,
+          "aiCharacters": 730,
+          "percentage": 19,
+          "status": "modified",
+          "hasAddedContent": true,
+          "addedContent": "\n        this.handleTokenExchangeIfNeeded();\n    }\n\n    private async handleTokenExchangeIfNeeded() {\n        // Check URL directly for one-time token (no localStorage needed)\n        const urlParams = new URLSearchParams(window.location.search);\n        const oneTimeToken = urlParams.get('token');\n\n        if (oneTimeToken) {\n            // Remove token from URL immediately for security\n            const url = new URL(window.location.href);\n            url.searchParams.delete('token');\n        ..."
+        },
+        {
+          "name": "src/external/bot-skeleton/services/api/appId.js",
+          "totalCharacters": 56,
+          "aiCharacters": 52,
+          "percentage": 93,
+          "status": "modified",
+          "hasAddedContent": true,
+          "addedContent": "    const token = localStorage.getItem('session_token');"
+        },
+        {
+          "name": "src/hooks/api/account/useActiveAccount.tsx",
+          "totalCharacters": 679,
+          "aiCharacters": 536,
+          "percentage": 79,
+          "status": "modified",
+          "hasAddedContent": true,
+          "addedContent": "const useActiveAccount = ({\n    allBalanceData,\n    directBalance,\n}: {\n    allBalanceData: Balance | null;\n    directBalance?: string;\n}) => {\n                  balance: currentBalanceData?.balance\n                      ? addComma(currentBalanceData.balance.toFixed(getDecimalPlaces(currentBalanceData.currency)))\n                      : directBalance\n                        ? addComma(parseFloat(directBalance).toFixed(getDecimalPlaces(activeAccount.currency)))\n                        : addComma(..."
+        },
+        {
+          "name": "src/stores/client-store.ts",
+          "totalCharacters": 1903,
+          "aiCharacters": 723,
+          "percentage": 38,
+          "status": "modified",
+          "hasAddedContent": true,
+          "addedContent": "import { api_base, observer } from '@/external/bot-skeleton';\nimport type RootStore from './root-store';\n    private authDataSubscription: { unsubscribe: () => void } | null = null;\n    private root_store: RootStore;\n\n    removeTokenFromUrl() {\n        const url = new URL(window.location.href);\n        if (url.searchParams.has('token')) {\n            url.searchParams.delete('token');\n            window.history.replaceState({}, document.title, url.toString());\n        }\n    }\n\n    storeSessionTok..."
+        },
+        {
+          "name": "src/utils/auth-utils.ts",
+          "totalCharacters": 91,
+          "aiCharacters": 0,
+          "percentage": 0,
+          "status": "modified",
+          "hasAddedContent": true,
+          "addedContent": "    localStorage.removeItem('session_token');\n    localStorage.removeItem('session_token');"
+        }
+      ],
+      "timestamp": "2025-08-21T02:42:18.427Z",
+      "repository": "deriv-com/derivatives-bot",
+      "pullRequest": "4",
+      "branch": "core-auth-flow",
+      "author": "prince-deriv",
+      "prTitle": "Prince/ Authentication Flow",
+      "hasAnalysis": true
+    },
+    {
+      "percentage": 78,
+      "totalCharacters": 1916,
+      "aiCharacters": 1501,
+      "files": [
+        {
+          "name": "src/app/app-content.jsx",
+          "totalCharacters": 109,
+          "aiCharacters": 55,
+          "percentage": 50,
+          "status": "modified",
+          "hasAddedContent": true,
+          "addedContent": "import useDevMode from '@/hooks/useDevMode';\n    // Initialize dev mode keyboard shortcuts\n    useDevMode();\n"
+        },
+        {
+          "name": "src/hooks/useDevMode.ts",
+          "totalCharacters": 1807,
+          "aiCharacters": 1446,
+          "percentage": 80,
+          "status": "modified",
+          "hasAddedContent": true,
+          "addedContent": "import { useEffect } from 'react';\nimport { botNotification } from '@/components/bot-notification/bot-notification';\nimport { APP_IDS } from '@/components/shared/utils/config/config';\nimport { LocalStorageConstants } from '@deriv-com/utils';\n\nconst DEV_SERVER_URL = 'qa197.deriv.dev';\nconst DEV_APP_ID = APP_IDS.LOCALHOST; // 36300\n\nconst useDevMode = () => {\n    const switchToDevServer = () => {\n        // Show connecting notification first\n        botNotification(`Connecting to dev server: ${DEV..."
+        }
+      ],
+      "timestamp": "2025-08-20T12:58:14.037Z",
+      "repository": "deriv-com/derivatives-bot",
+      "pullRequest": "11",
+      "branch": "test-production-connector",
+      "author": "prince-deriv",
+      "prTitle": "chore: added quick dev mode toggle",
+      "hasAnalysis": true
+    },
+    {
+      "timestamp": "2025-08-20T08:57:51.165Z",
+      "repository": "deriv-com/derivatives-bot",
+      "pullRequest": "9",
+      "branch": "matin/disable_translation",
+      "author": "matin-deriv",
+      "prTitle": "chore: Disable Translation Workflow",
+      "hasAnalysis": false,
+      "percentage": 0,
+      "totalCharacters": 0,
+      "aiCharacters": 0,
+      "files": []
+    },
+    {
+      "timestamp": "2025-08-20T06:44:20.066Z",
+      "repository": "deriv-com/derivatives-bot",
+      "pullRequest": "6",
+      "branch": "master",
+      "author": "ashkan-deriv",
+      "prTitle": "Claude Code",
+      "hasAnalysis": false,
+      "percentage": 0,
+      "totalCharacters": 0,
+      "aiCharacters": 0,
+      "files": []
+    },
+    {
+      "percentage": 46,
+      "totalCharacters": 2161,
+      "aiCharacters": 992,
+      "files": [
+        {
+          "name": "src/components/layout/footer/index.tsx",
+          "totalCharacters": 0,
+          "aiCharacters": 0,
+          "percentage": 0,
+          "status": "only-deletions",
+          "hasAddedContent": false,
+          "addedContent": ""
+        },
+        {
+          "name": "src/components/layout/header/account-switcher.scss",
+          "totalCharacters": 97,
+          "aiCharacters": 85,
+          "percentage": 88,
+          "status": "modified",
+          "hasAddedContent": true,
+          "addedContent": "\n.account-switcher-fixed {\n    pointer-events: none !important;\n    cursor: default !important;\n}"
+        },
+        {
+          "name": "src/components/layout/header/account-switcher.tsx",
+          "totalCharacters": 1861,
+          "aiCharacters": 856,
+          "percentage": 46,
+          "status": "modified",
+          "hasAddedContent": true,
+          "addedContent": "    const { ui, client } = useStore();\n    // Removed is_stop_button_visible as UIAccountSwitcher is now always disabled\n                <div className='account-switcher-fixed'>\n                    <UIAccountSwitcher\n                        activeAccount={activeAccount}\n                        isDisabled={true} // Force disabled to prevent interactions\n                        tabsLabels={tabs_labels}\n                        modalContentStyle={{\n                            content: {\n            ..."
+        },
+        {
+          "name": "src/components/layout/header/header-config.tsx",
+          "totalCharacters": 132,
+          "aiCharacters": 0,
+          "percentage": 0,
+          "status": "modified",
+          "hasAddedContent": true,
+          "addedContent": "import { LegacyHomeNewIcon as TradershubLogo, LegacyReportsIcon as ReportsLogo } from '@deriv/quill-icons/Legacy';\n    label: 'Hub',"
+        },
+        {
+          "name": "src/components/layout/header/header.scss",
+          "totalCharacters": 0,
+          "aiCharacters": 0,
+          "percentage": 0,
+          "status": "only-deletions",
+          "hasAddedContent": false,
+          "addedContent": ""
+        },
+        {
+          "name": "src/components/layout/header/header.tsx",
+          "totalCharacters": 0,
+          "aiCharacters": 0,
+          "percentage": 0,
+          "status": "only-deletions",
+          "hasAddedContent": false,
+          "addedContent": ""
+        },
+        {
+          "name": "src/components/layout/header/mobile-menu/__tests__/menu-content.spec.tsx",
+          "totalCharacters": 55,
+          "aiCharacters": 51,
+          "percentage": 93,
+          "status": "modified",
+          "hasAddedContent": true,
+          "addedContent": "    it('renders MenuItem components correctly', () => {"
+        },
+        {
+          "name": "src/components/layout/header/mobile-menu/menu-content.tsx",
+          "totalCharacters": 0,
+          "aiCharacters": 0,
+          "percentage": 0,
+          "status": "only-deletions",
+          "hasAddedContent": false,
+          "addedContent": ""
+        },
+        {
+          "name": "src/components/layout/header/mobile-menu/use-mobile-menu-config.tsx",
+          "totalCharacters": 16,
+          "aiCharacters": 0,
+          "percentage": 0,
+          "status": "modified",
+          "hasAddedContent": true,
+          "addedContent": "\n            [],"
+        }
+      ],
+      "timestamp": "2025-08-20T04:09:52.975Z",
+      "repository": "deriv-com/derivatives-bot",
+      "pullRequest": "1",
+      "branch": "mvp-cleanup",
+      "author": "prince-deriv",
+      "prTitle": "Prince/ MVP Cleanup ",
+      "hasAnalysis": true
+    },
+    {
+      "timestamp": "2025-08-19T10:05:03.921Z",
+      "repository": "deriv-com/derivatives-bot",
+      "pullRequest": "2",
+      "branch": "matin/initial_pr",
+      "author": "matin-deriv",
+      "prTitle": "Matin/Update CODEOWNERS file and GH Workflows",
+      "hasAnalysis": false,
+      "percentage": 0,
+      "totalCharacters": 0,
+      "aiCharacters": 0,
+      "files": []
+    },
     {
       "percentage": 0,
       "totalCharacters": 689,

@@ -58,7 +58,7 @@ export const AccountSwitcherWalletItem = observer(
                 return;
             }
 
-            localStorage.setItem('authToken', token);
+            localStorage.setItem('session_token', token);
             localStorage.setItem('active_loginid', loginId.toString());
             const account_type =
                 loginId

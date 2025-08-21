@@ -10,6 +10,7 @@ export const clearAuthData = (): void => {
     localStorage.removeItem('accountsList');
     localStorage.removeItem('clientAccounts');
     localStorage.removeItem('callback_token');
+    localStorage.removeItem('session_token');
     localStorage.removeItem('authToken');
     localStorage.removeItem('active_loginid');
     localStorage.removeItem('client.accounts');
@@ -26,6 +27,7 @@ export const handleOidcAuthFailure = (error: any): void => {
     console.error('OIDC authentication failed:', error);
 
     // Clear auth data
+    localStorage.removeItem('session_token');
     localStorage.removeItem('authToken');
     localStorage.removeItem('active_loginid');
     localStorage.removeItem('clientAccounts');

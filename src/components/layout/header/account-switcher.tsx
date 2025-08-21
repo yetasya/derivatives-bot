@@ -89,10 +89,10 @@ const RenderAccountItems = ({
 const AccountSwitcher = observer(({ activeAccount }: TAccountSwitcher) => {
     const { isDesktop } = useDevice();
     const { accountList } = useApiBase();
-    const { ui, run_panel, client } = useStore();
+    const { ui, client } = useStore();
     const { accounts } = client;
     const { toggleAccountsDialog, is_accounts_switcher_on, account_switcher_disabled_message } = ui;
-    const { is_stop_button_visible } = run_panel;
+    // Removed is_stop_button_visible as UIAccountSwitcher is now always disabled
     const has_wallet = Object.keys(accounts).some(id => accounts[id].account_category === 'wallet');
 
     const modifiedAccountList = useMemo(() => {
@@ -100,9 +100,9 @@ const AccountSwitcher = observer(({ activeAccount }: TAccountSwitcher) => {
             return {
                 ...account,
                 balance: addComma(
-                    client.all_accounts_balance?.accounts?.[account?.loginid]?.balance?.toFixed(
-                        getDecimalPlaces(account.currency)
-                    ) ?? '0'
+                    account?.loginid === client.loginid
+                        ? parseFloat(client.balance || '0').toFixed(getDecimalPlaces(account.currency))
+                        : parseFloat('0').toFixed(getDecimalPlaces(account.currency))
                 ),
                 currencyLabel: account?.is_virtual
                     ? tabs_labels.demo
@@ -140,7 +140,7 @@ const AccountSwitcher = observer(({ activeAccount }: TAccountSwitcher) => {
         const account_list = JSON.parse(localStorage.getItem('accountsList') ?? '{}');
         const token = account_list[loginId];
         if (!token) return;
-        localStorage.setItem('authToken', token);
+        localStorage.setItem('session_token', token);
         localStorage.setItem('active_loginid', loginId.toString());
         const account_type =
             loginId
@@ -175,36 +175,38 @@ const AccountSwitcher = observer(({ activeAccount }: TAccountSwitcher) => {
                 message={account_switcher_disabled_message}
                 zIndex='5'
             >
-                <UIAccountSwitcher
-                    activeAccount={activeAccount}
-                    isDisabled={is_stop_button_visible}
-                    tabsLabels={tabs_labels}
-                    modalContentStyle={{
-                        content: {
-                            top: isDesktop ? '30%' : '50%',
-                            borderRadius: '10px',
-                        },
-                    }}
-                >
-                    <UIAccountSwitcher.Tab title={tabs_labels.real}>
-                        <RenderAccountItems
-                            modifiedCRAccountList={modifiedCRAccountList as TModifiedAccount[]}
-                            modifiedMFAccountList={modifiedMFAccountList as TModifiedAccount[]}
-                            switchAccount={switchAccount}
-                            activeLoginId={activeAccount?.loginid}
-                            client={client}
-                        />
-                    </UIAccountSwitcher.Tab>
-                    <UIAccountSwitcher.Tab title={tabs_labels.demo}>
-                        <RenderAccountItems
-                            modifiedVRTCRAccountList={modifiedVRTCRAccountList as TModifiedAccount[]}
-                            switchAccount={switchAccount}
-                            isVirtual
-                            activeLoginId={activeAccount?.loginid}
-                            client={client}
-                        />
-                    </UIAccountSwitcher.Tab>
-                </UIAccountSwitcher>
+                <div className='account-switcher-fixed'>
+                    <UIAccountSwitcher
+                        activeAccount={activeAccount}
+                        isDisabled={true} // Force disabled to prevent interactions
+                        tabsLabels={tabs_labels}
+                        modalContentStyle={{
+                            content: {
+                                top: isDesktop ? '30%' : '50%',
+                                borderRadius: '10px',
+                            },
+                        }}
+                    >
+                        <UIAccountSwitcher.Tab title={tabs_labels.real}>
+                            <RenderAccountItems
+                                modifiedCRAccountList={modifiedCRAccountList as TModifiedAccount[]}
+                                modifiedMFAccountList={modifiedMFAccountList as TModifiedAccount[]}
+                                switchAccount={switchAccount}
+                                activeLoginId={activeAccount?.loginid}
+                                client={client}
+                            />
+                        </UIAccountSwitcher.Tab>
+                        <UIAccountSwitcher.Tab title={tabs_labels.demo}>
+                            <RenderAccountItems
+                                modifiedVRTCRAccountList={modifiedVRTCRAccountList as TModifiedAccount[]}
+                                switchAccount={switchAccount}
+                                isVirtual
+                                activeLoginId={activeAccount?.loginid}
+                                client={client}
+                            />
+                        </UIAccountSwitcher.Tab>
+                    </UIAccountSwitcher>
+                </div>
             </Popover>
         ))
     );

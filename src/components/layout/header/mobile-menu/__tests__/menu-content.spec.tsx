@@ -10,10 +10,11 @@ jest.mock('@deriv-com/ui', () => ({
     useDevice: jest.fn(() => ({ isDesktop: false })),
 }));
 
-jest.mock('../../platform-switcher', () => jest.fn(() => <div>Mock Platform Switcher</div>));
-
 describe('MenuContent Component', () => {
     const mock_store = mockStore(mock_ws as any);
+
+    // Mock client as logged in to show Hub link
+    mock_store.client.is_logged_in = true;
 
     const wrapper = ({ children }: { children: React.ReactNode }) => (
         <BrowserRouter>
@@ -28,23 +29,22 @@ describe('MenuContent Component', () => {
         });
     });
 
-    it('renders PlatformSwitcher and MenuItem components correctly', () => {
+    it('renders MenuItem components correctly', () => {
         render(<MenuContent />, { wrapper });
-        expect(screen.getByText(/Mock Platform Switcher/)).toBeInTheDocument();
-        expect(screen.getByText(/Trader's Hub/)).toBeInTheDocument();
+        expect(screen.getByText(/Hub/)).toBeInTheDocument();
         expect(screen.getByText(/Deriv.com/)).toBeInTheDocument();
     });
 
     it('adjusts text size for mobile devices', () => {
         render(<MenuContent />, { wrapper });
-        const text = screen.getByText(/Trader's Hub/);
+        const text = screen.getByText(/Hub/);
         expect(text).toHaveClass('derivs-text__size--md');
     });
 
     it('adjusts text size for desktop devices', () => {
         (useDevice as jest.Mock).mockReturnValue({ isDesktop: true });
         render(<MenuContent />, { wrapper });
-        const text = screen.getByText(/Trader's Hub/);
+        const text = screen.getByText(/Hub/);
         expect(text).toHaveClass('derivs-text__size--sm');
     });
 });

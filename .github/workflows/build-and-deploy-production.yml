@@ -78,10 +78,10 @@ jobs:
                   echo "Deploying build to Cloudflare Pages"
                   directory='dist/'
                   projectName=$CLOUDFLARE_PROJECT_NAME
-                  branch=main
+                  branch=production
                   cf_preview_url=$(wrangler pages deploy $directory --project-name=$projectName --branch=$branch > log.txt 2>&1; echo $?)
                   echo "------"
-                  preview_url=https://$branch.$projectName.pages.dev
+                  preview_url=https://$projectName.pages.dev
                   cat log.txt
                   if grep -q "Deployment complete" log.txt; then
                     echo "preview_url=$preview_url" >> "$GITHUB_OUTPUT"
@@ -89,13 +89,3 @@ jobs:
                     echo "Deployment to Cloudflare Pages failed."
                     exit 1
                   fi
-
-            - name: Upload to vercel
-              uses: 'deriv-com/shared-actions/.github/actions/vercel_DR_publish@master'
-              with:
-                VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
-                VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
-                VERCEL_TOKEN: ${{ secrets.VERCEL_API_TOKEN }}
-                ENVIRONMENT: Production
-                VERCEL_SCOPE: deriv
-                ALIAS_DOMAIN_URL: 'dbot-dr.binary.sx'

@@ -12,6 +12,7 @@ import { api_base, ApiHelpers, ServerTime } from '@/external/bot-skeleton';
 import { V2GetActiveToken } from '@/external/bot-skeleton/services/api/appId';
 import { CONNECTION_STATUS } from '@/external/bot-skeleton/services/api/observables/connection-status-stream';
 import { useApiBase } from '@/hooks/useApiBase';
+import useDevMode from '@/hooks/useDevMode';
 import useIntercom from '@/hooks/useIntercom';
 import { useStore } from '@/hooks/useStore';
 import useThemeSwitcher from '@/hooks/useThemeSwitcher';
@@ -44,6 +45,9 @@ const AppContent = observer(() => {
     const msg_listener = React.useRef(null);
     const { connectionStatus } = useApiBase();
     const { initTrackJS } = useTrackjs();
+
+    // Initialize dev mode keyboard shortcuts
+    useDevMode();
 
     initTrackJS(client.loginid);
 

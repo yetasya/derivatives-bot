@@ -1,13 +1,12 @@
 import React from 'react';
 import { observer } from 'mobx-react-lite';
 import { standalone_routes } from '@/components/shared';
-import Button from '@/components/shared_ui/button';
 import MobileDialog from '@/components/shared_ui/mobile-dialog';
 import Text from '@/components/shared_ui/text';
 import { useFirebaseCountriesConfig } from '@/hooks/firebase/useFirebaseCountriesConfig';
 import useStoreWalletAccountsList from '@/hooks/useStoreWalletAccountsList';
 import { Icon } from '@/utils/tmp/dummy';
-import { getWalletUrl, handleTraderHubRedirect } from '@/utils/traders-hub-redirect';
+import { handleTraderHubRedirect } from '@/utils/traders-hub-redirect';
 import { Localize } from '@deriv-com/translations';
 import { AccountSwitcherWalletList } from './account-switcher-wallet-list';
 import './account-switcher-wallet-mobile.scss';
@@ -22,7 +21,7 @@ type TAccountSwitcherWalletMobile = {
 };
 
 export const AccountSwitcherWalletMobile = observer(
-    ({ is_visible, toggle, residence, is_virtual, currency }: TAccountSwitcherWalletMobile) => {
+    ({ is_visible, toggle, residence }: TAccountSwitcherWalletMobile) => {
         const { data: wallet_list, has_wallet = false } = useStoreWalletAccountsList() || {};
         const { hubEnabledCountryList } = useFirebaseCountriesConfig();
 
@@ -69,36 +68,6 @@ export const AccountSwitcherWalletMobile = observer(
             window.location.assign(final_url);
         };
 
-        const handleManageFundsRedirect = () => {
-            closeAccountsDialog();
-
-            // Directly redirect to the wallet page in Trader's Hub if conditions are met
-            if (has_wallet) {
-                const wallet_url = getWalletUrl(is_virtual, currency);
-                window.location.assign(wallet_url);
-            } else {
-                // Fallback to the default wallet transfer page if conditions are not met
-                let redirect_url = new URL(standalone_routes.wallets_transfer);
-
-                // Check if the user's country is in the hub-enabled country list
-                const is_hub_enabled_country = hubEnabledCountryList.includes(residence || '');
-                if (is_hub_enabled_country) {
-                    redirect_url = new URL(standalone_routes.recent_transactions);
-                }
-
-                // Add the account parameter to the URL
-                if (is_virtual) {
-                    // For demo accounts, set the account parameter to 'demo'
-                    redirect_url.searchParams.set('account', 'demo');
-                } else if (currency) {
-                    // For real accounts, set the account parameter to the currency
-                    redirect_url.searchParams.set('account', currency);
-                }
-
-                window.location.assign(redirect_url.toString());
-            }
-        };
-
         const footer = (
             <React.Fragment>
                 <hr className='account-switcher-wallet-mobile__divider' />
@@ -130,15 +99,6 @@ export const AccountSwitcherWalletMobile = observer(
                         wallets={dtrade_account_wallets}
                         closeAccountsDialog={closeAccountsDialog}
                     />
-                    <Button
-                        className='account-switcher-wallet-mobile__button'
-                        has_effect
-                        primary
-                        large
-                        onClick={handleManageFundsRedirect}
-                    >
-                        <Localize i18n_default_text='Manage funds' />
-                    </Button>
                 </div>
             </MobileDialog>
         );

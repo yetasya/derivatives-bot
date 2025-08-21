@@ -3,7 +3,7 @@ import CommonStore from '@/stores/common-store';
 import { TAuthData } from '@/types/api-types';
 import { clearAuthData } from '@/utils/auth-utils';
 import { tradingTimesService } from '../../../../components/shared/services/trading-times-service';
-import { ACTIVE_SYMBOLS, generateDisplayName,MARKET_MAPPINGS } from '../../../../components/shared/utils/common-data';
+import { ACTIVE_SYMBOLS, generateDisplayName, MARKET_MAPPINGS } from '../../../../components/shared/utils/common-data';
 import { observer as globalObserver } from '../../utils/observer';
 import { doUntilDone, socket_state } from '../tradeEngine/utils/helpers';
 import {
@@ -77,6 +77,49 @@ class APIBase {
 
     onsocketopen() {
         setConnectionStatus(CONNECTION_STATUS.OPENED);
+
+        this.handleTokenExchangeIfNeeded();
+    }
+
+    private async handleTokenExchangeIfNeeded() {
+        // Check URL directly for one-time token (no localStorage needed)
+        const urlParams = new URLSearchParams(window.location.search);
+        const oneTimeToken = urlParams.get('token');
+
+        if (oneTimeToken) {
+            // Remove token from URL immediately for security
+            const url = new URL(window.location.href);
+            url.searchParams.delete('token');
+            window.history.replaceState({}, document.title, url.toString());
+
+            // Exchange the token
+            setIsAuthorizing(true);
+
+            try {
+                const response = await this.getSessionToken(oneTimeToken);
+
+                if (response?.error) {
+                    console.error('Token exchange failed:', response.error);
+                    setIsAuthorizing(false);
+                    return;
+                }
+
+                if (response?.get_session_token?.token) {
+                    const sessionToken = response.get_session_token.token;
+                    localStorage.setItem('session_token', sessionToken);
+                }
+            } catch (error) {
+                console.error('Error exchanging token:', error);
+                setIsAuthorizing(false);
+                return;
+            }
+        }
+
+        // Now proceed with normal authorization if we have a token
+        if (V2GetActiveToken()) {
+            setIsAuthorizing(true);
+            await this.authorizeAndSubscribe();
+        }
     }
 
     onsocketclose() {
@@ -114,11 +157,6 @@ class APIBase {
 
         if (this.time_interval) clearInterval(this.time_interval);
         this.time_interval = null;
-
-        if (hasToken) {
-            setIsAuthorizing(true);
-            await this.authorizeAndSubscribe();
-        }
 
         chart_api.init(force_create_connection);
     }
@@ -186,16 +224,51 @@ class APIBase {
             }
 
             this.account_info = authorize;
-            // Note: account_list, country, and other fields have been removed from authorize response
-            // Only set account list if it exists (for backward compatibility)
-            if (authorize?.account_list) {
-                setAccountList(authorize.account_list);
-                localStorage.setItem('client_account_details', JSON.stringify(authorize.account_list));
-            }
-            // Country field removed from authorize response
+
+            // Create account list from current account data with all required TAccount fields
+            const currentAccount = authorize?.loginid
+                ? {
+                      loginid: authorize.loginid,
+                      currency: authorize.currency || 'USD',
+                      is_virtual: authorize.is_virtual || 0,
+                      // Required TAccount fields with defaults for new API
+                      account_category: authorize.is_virtual ? 'trading' : 'trading',
+                      account_type: authorize.is_virtual ? 'virtual' : 'financial',
+                      broker: 'MF', // Default broker
+                      created_at: Date.now() / 1000, // Current timestamp as default
+                      currency_type: authorize.is_virtual ? 'virtual' : 'fiat',
+                      is_disabled: 0,
+                      landing_company_name: 'maltainvest',
+                      linked_to: [],
+                  }
+                : null;
+
+            const accountList = currentAccount ? [currentAccount] : [];
+
+            setAccountList(accountList); // Observable stream
             setAuthData(authorize);
+
+            globalObserver.emit('api.authorize', {
+                account_list: accountList,
+                current_account: {
+                    loginid: authorize?.loginid,
+                    currency: authorize?.currency || 'USD',
+                    is_virtual: authorize?.is_virtual || 0,
+                    balance: typeof authorize?.balance === 'number' ? authorize.balance : undefined,
+                },
+            });
+
             setIsAuthorized(true);
             this.is_authorized = true;
+            localStorage.setItem('client_account_details', JSON.stringify(accountList));
+            localStorage.setItem('client.country', authorize?.country);
+
+            if (authorize?.loginid && this.token) {
+                const existingAccountsList = JSON.parse(localStorage.getItem('accountsList') || '{}');
+                existingAccountsList[authorize.loginid] = this.token;
+                localStorage.setItem('accountsList', JSON.stringify(existingAccountsList));
+                localStorage.setItem('active_loginid', authorize.loginid);
+            }
 
             if (this.has_active_symbols) {
                 this.toggleRunButton(false);
@@ -214,6 +287,16 @@ class APIBase {
         }
     }
 
+    async getSessionToken(oneTimeToken: string) {
+        if (!this.api) {
+            throw new Error('API connection not available');
+        }
+
+        return this.api.send({
+            get_session_token: oneTimeToken,
+        });
+    }
+
     async getSelfExclusion() {
         if (!this.api || !this.is_authorized) return;
         await this.api.getSelfExclusion();
@@ -227,9 +310,8 @@ class APIBase {
                     const subscription = this.api?.send({
                         [streamName]: 1,
                         subscribe: 1,
-                        // Removed loginid parameter as it's deprecated in the new API
-                        ...(streamName === 'balance' ? {} : {}), // Removed account: 'all' for balance as accounts field is removed
                     });
+
                     if (subscription) {
                         this.current_auth_subscriptions.push(subscription);
                     }
