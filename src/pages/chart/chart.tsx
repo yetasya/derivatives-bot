@@ -10,10 +10,10 @@ import {
     TicksStreamRequest,
     TradingTimesRequest,
 } from '@deriv/api-types';
-import { ChartTitle, SmartChart } from '@deriv/deriv-charts';
+import { ChartTitle, SmartChart } from '@deriv-com/derivatives-charts';
 import { useDevice } from '@deriv-com/ui';
 import ToolbarWidgets from './toolbar-widgets';
-import '@deriv/deriv-charts/dist/smartcharts.css';
+import '@deriv-com/derivatives-charts/dist/smartcharts.css';
 
 type TSubscription = {
     [key: string]: null | {
@@ -128,7 +128,12 @@ const Chart = observer(({ show_digits_stats }: { show_digits_stats: boolean }) =
                 showLastDigitStats={show_digits_stats}
                 chartControlsWidgets={null}
                 enabledChartFooter={false}
-                chartStatusListener={(v: boolean) => setChartStatus(!v)}
+                stateChangeListener={(state: string) => {
+                    // Handle state changes: INITIAL, READY, SCROLL_TO_LEFT
+                    if (state === 'READY') {
+                        setChartStatus(true);
+                    }
+                }}
                 toolbarWidget={() => (
                     <ToolbarWidgets
                         updateChartType={updateChartType}

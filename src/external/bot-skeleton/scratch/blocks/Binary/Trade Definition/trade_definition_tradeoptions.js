@@ -1,6 +1,7 @@
 import { getCurrencyDisplayCode, getDecimalPlaces } from '@/components/shared';
 import { isAuthorizing$ } from '@/external/bot-skeleton/services/api/observables/connection-status-stream';
 import { localize } from '@deriv-com/translations';
+import { DURATIONS } from '../../../../../../components/shared/utils/common-data';
 import { config } from '../../../../constants/config';
 import ApiHelpers from '../../../../services/api/api-helpers';
 import DBotStore from '../../../dbot-store';
@@ -378,32 +379,50 @@ window.Blockly.Blocks.trade_definition_tradeoptions = {
                 });
             });
         } else {
-            contracts_for.getDurations(this.selected_symbol, this.selected_trade_type).then(durations => {
-                // Keep duration in memory so we can later reference them for validation
-                this.durations = durations;
+            contracts_for
+                .getDurations(this.selected_symbol, this.selected_trade_type)
+                .then(durations => {
+                    // Use fallback if no durations received
+                    if (!durations || durations.length === 0) {
+                        durations = DURATIONS;
+                    }
 
-                const duration_field_dropdown = this.getField('DURATIONTYPE_LIST');
-                const duration_input = this.getInput('DURATION');
-                const duration_options = durations.map(duration => [duration.display, duration.unit]);
+                    // Keep duration in memory so we can later reference them for validation
+                    this.durations = durations;
 
-                duration_field_dropdown?.updateOptions(duration_options, {
-                    default_value: should_use_default_unit ? undefined : duration_field_dropdown.getValue(),
-                });
+                    const duration_field_dropdown = this.getField('DURATIONTYPE_LIST');
+                    const duration_input = this.getInput('DURATION');
+                    const duration_options = durations.map(duration => [duration.display, duration.unit]);
 
-                if (should_update_value && duration_input && duration_input.connection) {
-                    const target_block = duration_input.connection.targetBlock();
+                    duration_field_dropdown?.updateOptions(duration_options, {
+                        default_value: should_use_default_unit ? undefined : duration_field_dropdown.getValue(),
+                    });
 
-                    if (target_block && target_block.isShadow()) {
-                        const min_duration = durations.find(duration => duration.unit === this.selected_duration);
+                    if (should_update_value && duration_input && duration_input.connection) {
+                        const target_block = duration_input.connection.targetBlock();
 
-                        if (min_duration) {
-                            runIrreversibleEvents(() => {
-                                target_block.setFieldValue(min_duration.min, 'NUM');
-                            });
+                        if (target_block && target_block.isShadow()) {
+                            const min_duration = durations.find(duration => duration.unit === this.selected_duration);
+
+                            if (min_duration) {
+                                runIrreversibleEvents(() => {
+                                    target_block.setFieldValue(min_duration.min, 'NUM');
+                                });
+                            }
                         }
                     }
-                }
-            });
+                })
+                .catch(error => {
+                    // Use fallback on error
+                    this.durations = DURATIONS;
+                    const duration_field_dropdown = this.getField('DURATIONTYPE_LIST');
+                    const duration_options = DURATIONS.map(duration => [duration.display, duration.unit]);
+
+                    duration_field_dropdown?.updateOptions(duration_options, {
+                        default_value: should_use_default_unit ? undefined : duration_field_dropdown.getValue(),
+                    });
+                    console.error('Error fetching durations:', error);
+                });
         }
         const {
             workspaces: {

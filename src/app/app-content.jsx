@@ -19,7 +19,7 @@ import useThemeSwitcher from '@/hooks/useThemeSwitcher';
 import useTrackjs from '@/hooks/useTrackjs';
 import initDatadog from '@/utils/datadog';
 import initHotjar from '@/utils/hotjar';
-import { setSmartChartsPublicPath } from '@deriv/deriv-charts';
+import { setSmartChartsPublicPath } from '@deriv-com/derivatives-charts';
 import { ThemeProvider } from '@deriv-com/quill-ui';
 import { localize } from '@deriv-com/translations';
 import Audio from '../components/audio';

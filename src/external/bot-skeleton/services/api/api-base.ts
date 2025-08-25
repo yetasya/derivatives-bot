@@ -2,6 +2,8 @@ import Cookies from 'js-cookie';
 import CommonStore from '@/stores/common-store';
 import { TAuthData } from '@/types/api-types';
 import { clearAuthData } from '@/utils/auth-utils';
+import { tradingTimesService } from '../../../../components/shared/services/trading-times-service';
+import { ACTIVE_SYMBOLS, generateDisplayName, MARKET_MAPPINGS } from '../../../../components/shared/utils/common-data';
 import { observer as globalObserver } from '../../utils/observer';
 import { doUntilDone, socket_state } from '../tradeEngine/utils/helpers';
 import {
@@ -53,10 +55,10 @@ class APIBase {
     time_interval: ReturnType<typeof setInterval> | null = null;
     has_active_symbols = false;
     is_stopping = false;
-    active_symbols = [];
+    active_symbols: any[] = [];
     current_auth_subscriptions: SubscriptionPromise[] = [];
     is_authorized = false;
-    active_symbols_promise: Promise<void> | null = null;
+    active_symbols_promise: Promise<any[] | undefined> | null = null;
     common_store: CommonStore | undefined;
     landing_company: string | null = null;
 
@@ -145,8 +147,10 @@ class APIBase {
             this.api?.connection.addEventListener('close', this.onsocketclose.bind(this));
         }
 
-        if (!this.has_active_symbols && !V2GetActiveToken()) {
-            this.active_symbols_promise = this.getActiveSymbols();
+        const hasToken = V2GetActiveToken();
+
+        if (!this.has_active_symbols && !hasToken) {
+            this.active_symbols_promise = this.getActiveSymbols().then(() => undefined);
         }
 
         this.initEventListeners();
@@ -212,6 +216,7 @@ class APIBase {
                         clearAuthData();
                     }
                 } else {
+                    // Authorization error
                     console.error('Authorization error:', error);
                 }
                 setIsAuthorizing(false);
@@ -264,7 +269,6 @@ class APIBase {
             this.subscribe();
             // this.getSelfExclusion(); commented this so we dont call it from two places
         } catch (e) {
-            console.error('Authorization failed:', e);
             this.is_authorized = false;
             clearAuthData();
             setIsAuthorized(false);
@@ -315,20 +319,292 @@ class APIBase {
     }
 
     getActiveSymbols = async () => {
-        await doUntilDone(() => this.api?.send({ active_symbols: 'brief' }), [], this).then(
-            ({ active_symbols = [], error = {} }) => {
-                const pip_sizes = {};
-                if (active_symbols.length) this.has_active_symbols = true;
-                active_symbols.forEach(({ symbol, pip }: { symbol: string; pip: string }) => {
-                    (pip_sizes as Record<string, number>)[symbol] = +(+pip).toExponential().substring(3);
-                });
-                this.pip_sizes = pip_sizes as Record<string, number>;
-                this.toggleRunButton(false);
-                this.active_symbols = active_symbols;
-                return active_symbols || error;
+        if (!this.api) {
+            this.useActiveSymbols();
+            return;
+        }
+
+        try {
+            // Add timeout to prevent hanging
+            const timeout = new Promise((_, reject) =>
+                setTimeout(() => reject(new Error('Active symbols fetch timeout')), 10000)
+            );
+
+            const activeSymbolsPromise = doUntilDone(() => this.api?.send({ active_symbols: 'brief' }), [], this);
+
+            const result = await Promise.race([activeSymbolsPromise, timeout]);
+
+            const { active_symbols = [], error = {} } = result as any;
+
+            if (error && Object.keys(error).length > 0) {
+                this.useActiveSymbols();
+                return;
             }
-        );
+
+            if (!active_symbols.length) {
+                this.useActiveSymbols();
+                return;
+            }
+
+            const pip_sizes = {};
+            this.has_active_symbols = true;
+
+            // Process pip sizes - handle both old and new field names
+            active_symbols.forEach((symbol: any) => {
+                const underlying_symbol = symbol.underlying_symbol || symbol.symbol;
+                const pip_size = symbol.pip_size || symbol.pip;
+                if (underlying_symbol && pip_size) {
+                    (pip_sizes as Record<string, number>)[underlying_symbol] = +(+pip_size)
+                        .toExponential()
+                        .substring(3);
+                }
+            });
+            this.pip_sizes = pip_sizes as Record<string, number>;
+
+            // Enrich active symbols with trading times data with timeout
+            try {
+                const enrichmentTimeout = new Promise((_, reject) =>
+                    setTimeout(() => reject(new Error('Enrichment timeout')), 5000)
+                );
+
+                const enrichmentPromise = this.enrichActiveSymbolsWithTradingTimes(active_symbols);
+                const enriched_symbols = await Promise.race([enrichmentPromise, enrichmentTimeout]);
+
+                this.active_symbols = enriched_symbols as any[];
+            } catch (enrichment_error) {
+                // Fallback to original active symbols if enrichment fails
+                this.active_symbols = active_symbols;
+            }
+            this.toggleRunButton(false);
+            return this.active_symbols;
+        } catch (fetch_error) {
+            this.useActiveSymbols();
+        }
     };
+
+    private useActiveSymbols() {
+        // Use common active symbols
+        this.active_symbols = ACTIVE_SYMBOLS;
+
+        // Set pip sizes
+        const pip_sizes = {};
+        this.active_symbols.forEach((symbol: any) => {
+            const underlying_symbol = symbol.underlying_symbol || symbol.symbol;
+            const pip_size = symbol.pip;
+            if (underlying_symbol && pip_size) {
+                (pip_sizes as Record<string, number>)[underlying_symbol] = +(+pip_size).toExponential().substring(3);
+            }
+        });
+        this.pip_sizes = pip_sizes as Record<string, number>;
+
+        this.has_active_symbols = true;
+        this.toggleRunButton(false);
+    }
+
+    /**
+     * Maps active symbols market codes to trading times market names
+     */
+    private getMarketMapping(): Map<string, string> {
+        return MARKET_MAPPINGS.MARKET_DISPLAY_NAMES;
+    }
+
+    /**
+     * Maps active symbols submarket codes to trading times submarket names
+     */
+    private getSubmarketMapping(): Map<string, string> {
+        return MARKET_MAPPINGS.SUBMARKET_DISPLAY_NAMES;
+    }
+
+    /**
+     * Enriches active symbols with market display names from trading times
+     */
+    private async enrichActiveSymbolsWithTradingTimes(active_symbols: any[]) {
+        if (!active_symbols || !active_symbols.length) {
+            return active_symbols;
+        }
+
+        try {
+            // Get trading times data
+            const trading_times = await tradingTimesService.getTradingTimes();
+
+            if (!trading_times?.markets) {
+                return active_symbols;
+            }
+
+            // Create lookup maps for efficient searching
+            const market_display_names = new Map<string, string>();
+            const submarket_display_names = new Map<string, string>();
+            const market_mapping = this.getMarketMapping();
+            const submarket_mapping = this.getSubmarketMapping();
+
+            if (!trading_times.markets || !Array.isArray(trading_times.markets)) {
+                return active_symbols;
+            }
+
+            try {
+                trading_times.markets.forEach((market: any) => {
+                    // Use the name property directly as the display name
+                    if (market.name) {
+                        market_display_names.set(market.name, market.name);
+
+                        // Also create reverse mapping for market codes
+                        for (const [code, name] of market_mapping.entries()) {
+                            if (name === market.name) {
+                                market_display_names.set(code, market.name);
+                            }
+                        }
+                    }
+
+                    if (market.submarkets) {
+                        market.submarkets.forEach((submarket: any) => {
+                            // Use the name property directly as the display name
+                            if (submarket.name && market.name) {
+                                const key = `${market.name}_${submarket.name}`;
+                                submarket_display_names.set(key, submarket.name);
+
+                                // Also create mapping for market codes and submarket codes
+                                for (const [code, name] of market_mapping.entries()) {
+                                    if (name === market.name) {
+                                        const code_key = `${code}_${submarket.name}`;
+                                        submarket_display_names.set(code_key, submarket.name);
+                                    }
+                                }
+                            }
+                        });
+                    }
+                });
+            } catch (markets_error) {
+                return active_symbols;
+            }
+
+            // Add direct submarket code mappings
+            for (const [submarket_code, submarket_name] of submarket_mapping.entries()) {
+                submarket_display_names.set(submarket_code, submarket_name);
+
+                // Also add with market prefixes
+                for (const [market_code] of market_mapping.entries()) {
+                    const key = `${market_code}_${submarket_code}`;
+                    submarket_display_names.set(key, submarket_name);
+                }
+            }
+
+            // Create symbol display names lookup
+            const symbol_display_names = new Map<string, string>();
+
+            trading_times.markets.forEach((market: any) => {
+                if (market.submarkets) {
+                    market.submarkets.forEach((submarket: any) => {
+                        if (submarket.symbols) {
+                            submarket.symbols.forEach((symbol_info: any) => {
+                                if (symbol_info.symbol && symbol_info.display_name) {
+                                    symbol_display_names.set(symbol_info.symbol, symbol_info.display_name);
+                                }
+                                // Also handle underlying_symbol if present
+                                if (symbol_info.underlying_symbol && symbol_info.display_name) {
+                                    symbol_display_names.set(symbol_info.underlying_symbol, symbol_info.display_name);
+                                }
+                            });
+                        }
+                    });
+                }
+            });
+
+            // Enrich each active symbol
+            return active_symbols.map(symbol => {
+                const enriched_symbol = { ...symbol };
+
+                // Add market display name using the name property from trading times
+                if (symbol.market) {
+                    enriched_symbol.market_display_name = market_display_names.get(symbol.market) || symbol.market;
+                }
+
+                // Add submarket display name using the name property from trading times
+                if (symbol.submarket) {
+                    // Try multiple lookup strategies for submarket
+                    let submarket_display_name = symbol.submarket;
+
+                    // 1. Try with market prefix
+                    if (symbol.market) {
+                        const submarket_key = `${symbol.market}_${symbol.submarket}`;
+                        submarket_display_name = submarket_display_names.get(submarket_key) || submarket_display_name;
+                    }
+
+                    // 2. Try direct submarket code lookup
+                    submarket_display_name = submarket_display_names.get(symbol.submarket) || submarket_display_name;
+
+                    enriched_symbol.submarket_display_name = submarket_display_name;
+                }
+
+                // Add subgroup display name if available using the name property from trading times
+                if (symbol.subgroup) {
+                    let subgroup_display_name = symbol.subgroup;
+
+                    // Try with market prefix
+                    if (symbol.market) {
+                        const subgroup_key = `${symbol.market}_${symbol.subgroup}`;
+                        subgroup_display_name = submarket_display_names.get(subgroup_key) || subgroup_display_name;
+                    }
+
+                    // Try direct subgroup code lookup
+                    subgroup_display_name = submarket_display_names.get(symbol.subgroup) || subgroup_display_name;
+
+                    enriched_symbol.subgroup_display_name = subgroup_display_name;
+                }
+
+                // Add symbol display name from trading times
+                const symbol_code = symbol.underlying_symbol || symbol.symbol;
+                if (symbol_code) {
+                    const symbol_display_name = symbol_display_names.get(symbol_code);
+                    if (symbol_display_name) {
+                        enriched_symbol.display_name = symbol_display_name;
+                    } else {
+                        // Fallback: Generate a display name if not found in trading times
+                        enriched_symbol.display_name = this.generateFallbackDisplayName(symbol_code, symbol);
+                    }
+                }
+
+                // Add underlying_symbol display name from trading times
+                if (symbol.underlying_symbol) {
+                    const underlying_symbol_display_name = symbol_display_names.get(symbol.underlying_symbol);
+                    if (underlying_symbol_display_name) {
+                        enriched_symbol.underlying_symbol_display_name = underlying_symbol_display_name;
+                    }
+                }
+
+                // Also add symbol display name if symbol field exists
+                if (symbol.symbol) {
+                    const symbol_field_display_name = symbol_display_names.get(symbol.symbol);
+                    if (symbol_field_display_name) {
+                        enriched_symbol.symbol_display_name = symbol_field_display_name;
+                    }
+                }
+
+                // Handle new API field names - ensure backward compatibility
+                if (symbol.symbol_type && !symbol.underlying_symbol_type) {
+                    enriched_symbol.underlying_symbol_type = symbol.symbol_type;
+                }
+
+                // Ensure we have both symbol and underlying_symbol for backward compatibility
+                if (symbol.underlying_symbol && !symbol.symbol) {
+                    enriched_symbol.symbol = symbol.underlying_symbol;
+                } else if (symbol.symbol && !symbol.underlying_symbol) {
+                    enriched_symbol.underlying_symbol = symbol.symbol;
+                }
+
+                return enriched_symbol;
+            });
+        } catch (error) {
+            return active_symbols;
+        }
+    }
+
+    /**
+     * Generates a fallback display name for symbols not found in trading times
+     * Aligned with frontend getMarketNamesMap() configuration
+     */
+    private generateFallbackDisplayName(symbol_code: string, symbol: any): string {
+        return generateDisplayName(symbol_code, symbol);
+    }
 
     toggleRunButton = (toggle: boolean) => {
         const run_button = document.querySelector('#db-animation__run-button');

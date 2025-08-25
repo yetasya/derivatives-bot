@@ -1,4 +1,6 @@
+import { getTradingTimes, TRADING_TIMES } from '../../../../components/shared/utils/common-data';
 import PendingPromise from '../../utils/pending-promise';
+import { api_base } from './api-base';
 
 export default class TradingTimes {
     constructor({ ws, server_time }) {
@@ -71,53 +73,83 @@ export default class TradingTimes {
 
     async updateTradingTimes() {
         const last_update_date = this.last_update_moment.format('YYYY-MM-DD');
-        const response = await this.ws?.send({ trading_times: last_update_date });
 
-        if (response.error) {
-            return;
-        }
+        try {
+            // Check if API is available
+            if (!api_base.api && !this.ws) {
+                this.setTradingTimes();
+                return;
+            }
 
-        this.trading_times = {};
+            const response = await (api_base.api?.send({ trading_times: last_update_date }) ||
+                this.ws?.send({ trading_times: last_update_date }));
 
-        const now = this.server_time.local().toDate();
-        const date_str = now.toISOString().substring(0, 11);
-        const getUTCDate = hour => new Date(`${date_str}${hour}Z`);
-        const {
-            trading_times: { markets },
-        } = response;
+            if (response?.error) {
+                this.setTradingTimes();
+                return;
+            }
 
-        if (!markets) {
-            return;
-        }
+            this.trading_times = {};
 
-        markets?.forEach(market => {
-            const { submarkets } = market;
+            const now = this.server_time.local().toDate();
+            const date_str = now.toISOString().substring(0, 11);
+            const getUTCDate = hour => new Date(`${date_str}${hour}Z`);
 
-            submarkets?.forEach(submarket => {
-                const { symbols } = submarket;
+            if (!response?.trading_times?.markets) {
+                this.setTradingTimes();
+                return;
+            }
 
-                symbols?.forEach(symbol_obj => {
-                    const { times, symbol } = symbol_obj;
-                    const { open, close } = times;
-                    const is_open_all_day = open.length === 1 && open[0] === '00:00:00' && close[0] === '23:59:59';
-                    const is_closed_all_day = open.length === 1 && open[0] === '--' && close[0] === '--';
+            const {
+                trading_times: { markets },
+            } = response;
 
-                    let processed_times;
+            // Process markets within the try block
+            markets?.forEach(market => {
+                const { submarkets } = market;
 
-                    if (!is_open_all_day && !is_closed_all_day) {
-                        processed_times = open.map((open_time, index) => ({
-                            open: getUTCDate(open_time),
-                            close: getUTCDate(close[index]),
-                        }));
-                    }
+                submarkets?.forEach(submarket => {
+                    const { symbols } = submarket;
 
-                    this.trading_times[symbol] = {
-                        is_open_all_day,
-                        is_closed_all_day,
-                        times: processed_times,
-                    };
+                    symbols?.forEach(symbol_obj => {
+                        const { times, symbol } = symbol_obj;
+                        const { open, close } = times;
+                        const is_open_all_day = open.length === 1 && open[0] === '00:00:00' && close[0] === '23:59:59';
+                        const is_closed_all_day = open.length === 1 && open[0] === '--' && close[0] === '--';
+
+                        let processed_times;
+
+                        if (!is_open_all_day && !is_closed_all_day) {
+                            processed_times = open.map((open_time, index) => ({
+                                open: getUTCDate(open_time),
+                                close: getUTCDate(close[index]),
+                            }));
+                        }
+
+                        this.trading_times[symbol] = {
+                            is_open_all_day,
+                            is_closed_all_day,
+                            times: processed_times,
+                        };
+                    });
                 });
             });
+
+            // If no trading times were processed, use fallback
+            if (Object.keys(this.trading_times).length === 0) {
+                this.setTradingTimes();
+            }
+        } catch (error) {
+            this.setTradingTimes();
+            return;
+        }
+    }
+
+    setTradingTimes() {
+        this.trading_times = {};
+
+        TRADING_TIMES.SYMBOLS.forEach(symbol => {
+            this.trading_times[symbol] = getTradingTimes(symbol);
         });
     }
 
@@ -189,6 +221,12 @@ export default class TradingTimes {
             return false;
         }
 
-        return this.trading_times[symbol_name].is_opened;
+        const isOpened = this.trading_times[symbol_name].is_opened;
+        return isOpened;
+    }
+
+    // Method to get display name for symbols (used by active symbols)
+    getSymbolDisplayName(symbol) {
+        return TRADING_TIMES.SYMBOL_DISPLAY_NAMES[symbol] || symbol;
     }
 }

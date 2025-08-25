@@ -1,5 +1,5 @@
 import { memo } from 'react';
-import { ChartMode, DrawTools, Share, StudyLegend, ToolbarWidget, Views } from '@deriv/deriv-charts';
+import { ChartMode, DrawTools, Share, StudyLegend, ToolbarWidget, Views } from '@deriv-com/derivatives-charts';
 
 type TToolbarWidgetsProps = {
     updateChartType: (chart_type: string) => void;
@@ -9,8 +9,10 @@ type TToolbarWidgetsProps = {
 };
 
 const ToolbarWidgets = ({ updateChartType, updateGranularity, position, isDesktop }: TToolbarWidgetsProps) => {
+    const validPosition = position === 'top' || position === 'bottom' ? position : 'top';
+
     return (
-        <ToolbarWidget position={position}>
+        <ToolbarWidget position={validPosition}>
             <ChartMode portalNodeId='modal_root' onChartType={updateChartType} onGranularity={updateGranularity} />
             {isDesktop && (
                 <>
