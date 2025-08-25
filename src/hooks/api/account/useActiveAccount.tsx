@@ -30,7 +30,7 @@ const useActiveAccount = ({
                       ? addComma(currentBalanceData.balance.toFixed(getDecimalPlaces(currentBalanceData.currency)))
                       : directBalance
                         ? addComma(parseFloat(directBalance).toFixed(getDecimalPlaces(activeAccount.currency)))
-                        : addComma(parseFloat('0').toFixed(getDecimalPlaces(activeAccount.currency))), // [AI] Format zero with proper decimals
+                        : addComma(parseFloat('0').toFixed(getDecimalPlaces(activeAccount.currency))), //  [AI] Format zero with proper decimals
                   currencyLabel: activeAccount?.is_virtual ? localize('Demo') : activeAccount?.currency,
                   icon: (
                       <CurrencyIcon

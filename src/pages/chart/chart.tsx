@@ -1,4 +1,3 @@
-// [AI]
 import { useEffect, useRef, useState } from 'react';
 import classNames from 'classnames';
 import { observer } from 'mobx-react-lite';
@@ -164,4 +163,3 @@ const Chart = observer(({ show_digits_stats }: { show_digits_stats: boolean }) =
 });
 
 export default Chart;
-// [/AI]

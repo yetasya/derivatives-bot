@@ -1,4 +1,3 @@
-// [AI]
 import { useCallback } from 'react';
 import clsx from 'clsx';
 import { observer } from 'mobx-react-lite';
@@ -148,4 +147,3 @@ const AppHeader = observer(({ isAuthenticating }: TAppHeaderProps) => {
 });
 
 export default AppHeader;
-// [/AI]

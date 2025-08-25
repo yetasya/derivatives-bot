@@ -1,4 +1,3 @@
-// [AI]
 import {
     AccountLimitsRequest,
     AccountLimitsResponse,
@@ -928,4 +927,3 @@ export type TAuthData = {
     user_id: number;
     token?: string;
 };
-// [/AI]

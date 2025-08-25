@@ -1,4 +1,3 @@
-// [AI]
 import { save_types } from '../constants';
 import { config } from '../constants/config';
 import { api_base } from '../services/api/api-base';
@@ -674,4 +673,3 @@ class DBot {
 }
 
 export default new DBot();
-// [/AI]
