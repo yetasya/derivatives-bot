@@ -8,13 +8,6 @@ import { localize } from '@deriv-com/translations';
 import { URLUtils } from '@deriv-com/utils';
 import App from './App';
 
-// Extend Window interface to include is_tmb_enabled property
-declare global {
-    interface Window {
-        is_tmb_enabled?: boolean;
-    }
-}
-
 const setLocalStorageToken = async (
     loginInfo: URLUtils.LoginInfo[],
     paramsToDelete: string[],
@@ -48,10 +41,8 @@ const setLocalStorageToken = async (
                         // Set isAuthComplete to true to prevent the app from getting stuck in loading state
                         setIsAuthComplete(true);
 
-                        const is_tmb_enabled = window.is_tmb_enabled === true;
-                        // Only emit the InvalidToken event if logged_state is true
-                        if (Cookies.get('logged_state') === 'true' && !is_tmb_enabled) {
-                            // Emit an event that can be caught by the application to retrigger OIDC authentication
+                        // Emit the InvalidToken event for handling by the application
+                        if (Cookies.get('logged_state') === 'true') {
                             globalObserver.emit('InvalidToken', { error });
                         }
 

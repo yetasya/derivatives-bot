@@ -1,7 +1,6 @@
 import { ComponentProps, ReactNode, useMemo } from 'react';
 import { standalone_routes } from '@/components/shared';
 import useThemeSwitcher from '@/hooks/useThemeSwitcher';
-import useTMB from '@/hooks/useTMB';
 import RootStore from '@/stores/root-store';
 import { BrandDerivLogoCoralIcon } from '@deriv/quill-icons';
 import {
@@ -38,9 +37,6 @@ const useMobileMenuConfig = (client?: RootStore['client']) => {
     const currency = client?.getCurrency?.();
     const is_logged_in = client?.is_logged_in;
     const client_residence = client?.residence;
-
-    const { isTmbEnabled } = useTMB();
-    const is_tmb_enabled = window.is_tmb_enabled || isTmbEnabled();
 
     const menuConfig = useMemo(
         (): TMenuConfig[] => [
@@ -86,7 +82,7 @@ const useMobileMenuConfig = (client?: RootStore['client']) => {
             [],
             [],
         ],
-        [is_virtual, currency, is_logged_in, client_residence, is_tmb_enabled, client]
+        [is_virtual, currency, is_logged_in, client_residence, client]
     );
 
     return {
