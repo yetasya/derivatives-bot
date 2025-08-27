@@ -8,7 +8,6 @@ import { api_base } from '@/external/bot-skeleton';
 import { useOauth2 } from '@/hooks/auth/useOauth2';
 import { useApiBase } from '@/hooks/useApiBase';
 import { useStore } from '@/hooks/useStore';
-import useTMB from '@/hooks/useTMB';
 import { TLandingCompany, TSocketResponseData } from '@/types/api-types';
 import { useTranslations } from '@deriv-com/translations';
 
@@ -37,14 +36,7 @@ const CoreStoreProvider: React.FC<{ children: React.ReactNode }> = observer(({ c
 
     const { oAuthLogout } = useOauth2({ handleLogout: async () => client.logout(), client });
 
-    const { is_tmb_enabled: tmb_enabled_from_hook } = useTMB();
-
-    const is_tmb_enabled = useMemo(
-        () => window.is_tmb_enabled === true || tmb_enabled_from_hook,
-        [tmb_enabled_from_hook]
-    );
-
-    const isLoggedOutCookie = Cookies.get('logged_state') === 'false' && !is_tmb_enabled;
+    const isLoggedOutCookie = Cookies.get('logged_state') === 'false';
 
     useEffect(() => {
         if (isLoggedOutCookie && client?.is_logged_in) {
@@ -102,7 +94,7 @@ const CoreStoreProvider: React.FC<{ children: React.ReactNode }> = observer(({ c
                     });
             }, 10000);
         }
-    }, [client, common, isAuthorizing, is_tmb_enabled]);
+    }, [client, common, isAuthorizing]);
 
     const handleMessages = useCallback(
         async (res: Record<string, unknown>) => {
