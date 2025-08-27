@@ -22,7 +22,7 @@ type TAppHeaderProps = {
 
 const AppHeader = observer(({ isAuthenticating }: TAppHeaderProps) => {
     const { isDesktop } = useDevice();
-    const { isAuthorizing, activeLoginid } = useApiBase();
+    const { isAuthorizing, isAuthorized, activeLoginid } = useApiBase();
     const { client } = useStore() ?? {};
 
     const { data: activeAccount } = useActiveAccount({
@@ -36,11 +36,19 @@ const AppHeader = observer(({ isAuthenticating }: TAppHeaderProps) => {
 
     const { isSingleLoggingIn } = useOauth2();
 
+    // Check if there's a session token in localStorage - if so, we should show loading until auth is complete
+    const hasSessionToken = typeof window !== 'undefined' && !!localStorage.getItem('session_token');
+
     const renderAccountSection = useCallback(() => {
-        // Show loader during authentication processes
-        if (isAuthenticating || isAuthorizing || isSingleLoggingIn) {
+        if (
+            isAuthenticating ||
+            isAuthorizing ||
+            isSingleLoggingIn ||
+            (activeLoginid && !isAuthorized) ||
+            (hasSessionToken && !isAuthorized && !activeLoginid)
+        ) {
             return <AccountsInfoLoader isLoggedIn isMobile={!isDesktop} speed={3} />;
-        } else if (activeLoginid) {
+        } else if (activeLoginid && isAuthorized) {
             return (
                 <>
                     <AccountSwitcher activeAccount={activeAccount} />
@@ -77,6 +85,8 @@ const AppHeader = observer(({ isAuthenticating }: TAppHeaderProps) => {
         isSingleLoggingIn,
         isDesktop,
         activeLoginid,
+        isAuthorized,
+        hasSessionToken,
         standalone_routes,
         client,
         currency,

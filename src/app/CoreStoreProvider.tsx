@@ -50,12 +50,15 @@ const CoreStoreProvider: React.FC<{ children: React.ReactNode }> = observer(({ c
     );
 
     useEffect(() => {
-        if (client && activeAccount) {
+        if (client && activeAccount && isAuthorized) {
             client?.setLoginId(activeLoginid);
             client?.setAccountList(accountList);
             client?.setIsLoggedIn(true);
+        } else if (client && !isAuthorized) {
+            // Ensure client shows as not logged in until authorization is complete
+            client?.setIsLoggedIn(false);
         }
-    }, [accountList, activeAccount, activeLoginid, client]);
+    }, [accountList, activeAccount, activeLoginid, client, isAuthorized]);
 
     useEffect(() => {
         initFormErrorMessages(FORM_ERROR_MESSAGES());
