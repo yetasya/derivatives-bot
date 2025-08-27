@@ -1,4 +1,4 @@
-import config_data from '../../brand.config.json';
+import config_data from '../../../../../brand.config.json';
 
 type TLandingCompany = {
     fx: string;
