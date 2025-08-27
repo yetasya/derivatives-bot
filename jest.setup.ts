@@ -46,6 +46,6 @@ Object.defineProperty(window, 'matchMedia', {
 global.fetch = jest.fn(() =>
     Promise.resolve({
         ok: true,
-        json: () => Promise.resolve({ is_tmb_enabled: false }),
+        json: () => Promise.resolve({}),
     })
 ) as jest.Mock;

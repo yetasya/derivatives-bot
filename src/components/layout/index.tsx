@@ -1,11 +1,8 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useState } from 'react';
 import clsx from 'clsx';
 import Cookies from 'js-cookie';
 import { Outlet } from 'react-router-dom';
 import { api_base } from '@/external/bot-skeleton';
-import useTMB from '@/hooks/useTMB';
-import { handleOidcAuthFailure } from '@/utils/auth-utils';
-import { requestOidcAuthentication } from '@deriv-com/auth-client';
 import { useDevice } from '@deriv-com/ui';
 import { crypto_currencies_display_order, fiat_currencies_display_order } from '../shared';
 import Footer from './footer';
@@ -17,11 +14,6 @@ const Layout = () => {
     const { isDesktop } = useDevice();
 
     const isCallbackPage = window.location.pathname === '/callback';
-    const { onRenderTMBCheck, is_tmb_enabled: tmb_enabled_from_hook, isTmbEnabled } = useTMB();
-    const is_tmb_enabled = useMemo(
-        () => window.is_tmb_enabled === true || tmb_enabled_from_hook,
-        [tmb_enabled_from_hook]
-    );
 
     const isLoggedInCookie = Cookies.get('logged_state') === 'true';
     const isEndpointPage = window.location.pathname.includes('endpoint');
@@ -130,63 +122,9 @@ const Layout = () => {
             sessionStorage.setItem('query_param_currency', currency);
         }
 
-        const checkOIDCEnabledWithMissingAccount = !isEndpointPage && !isCallbackPage && !clientHasCurrency;
-        const shouldAuthenticate =
-            (isLoggedInCookie && !isClientAccountsPopulated && !isEndpointPage && !isCallbackPage) ||
-            checkOIDCEnabledWithMissingAccount;
-
-        // Create an async IIFE to handle authentication
-        (async () => {
-            try {
-                // First, explicitly wait for TMB status to be determined
-                // This ensures we have the correct TMB status before proceeding
-                const tmbEnabled = await isTmbEnabled();
-
-                // Now use the result of the explicit check
-                if (tmbEnabled) {
-                    await onRenderTMBCheck();
-                } else if (shouldAuthenticate) {
-                    const query_param_currency = currency || sessionStorage.getItem('query_param_currency') || 'USD';
-
-                    // Make sure we have the currency in session storage before redirecting
-                    if (query_param_currency) {
-                        sessionStorage.setItem('query_param_currency', query_param_currency);
-                    }
-                    try {
-                        await requestOidcAuthentication({
-                            redirectCallbackUri: `${window.location.origin}/callback`,
-                            ...(query_param_currency
-                                ? {
-                                      state: {
-                                          account: query_param_currency,
-                                      },
-                                  }
-                                : {}),
-                        });
-                    } catch (err) {
-                        setIsAuthenticating(false);
-                        handleOidcAuthFailure(err);
-                    }
-                }
-            } catch (err) {
-                // eslint-disable-next-line no-console
-                setIsAuthenticating(false);
-                console.error('Authentication error:', err);
-            } finally {
-                setIsAuthenticating(false);
-            }
-        })();
-    }, [
-        isLoggedInCookie,
-        isClientAccountsPopulated,
-        isEndpointPage,
-        isCallbackPage,
-        clientHasCurrency,
-        tmb_enabled_from_hook,
-        onRenderTMBCheck,
-        currency,
-        is_tmb_enabled,
-    ]);
+        // Authentication is now handled by the OAuth flow
+        setIsAuthenticating(false);
+    }, [isLoggedInCookie, isClientAccountsPopulated, isEndpointPage, isCallbackPage, clientHasCurrency, currency]);
 
     // Add a state to track if initial authentication check is complete
     const [isInitialAuthCheckComplete, setIsInitialAuthCheckComplete] = useState(false);
