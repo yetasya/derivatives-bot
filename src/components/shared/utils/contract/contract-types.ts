@@ -20,6 +20,7 @@ export type TContractStore = {
 export type TContractInfo = ProposalOpenContract &
     Portfolio1 & {
         contract_update?: ContractUpdate;
+        underlying_symbol?: string;
     };
 
 export type TTickItem = {
