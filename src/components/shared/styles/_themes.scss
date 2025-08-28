@@ -35,14 +35,21 @@
     --text-align-right: right;
     --text-align-center: center;
 
-    // Brand primary colors
-    --brand-white: #{constants.$color-white};
-    --brand-dark-grey: #{constants.$color-black};
-    --brand-red-coral: #{constants.$color-red};
-    --brand-orange: #{constants.$color-orange};
+    /* Brand colors - dynamically generated from brand.config.json */
+    --brand-white: #fff;
+    --brand-dark-grey: #151717;
+    --brand-red-coral: #ff444f; /* legacy compatibility */
+    --brand-orange: #2a3052; /* legacy compatibility */
 
-    // Brand secondary colors
-    --brand-secondary: #{constants.$color-green};
+    /* Dynamic brand colors (set by brand configuration) */
+    --brand-primary: #ff444f;
+    --brand-secondary: #85acb0;
+    --brand-tertiary: #2a3052;
+    --brand-success: #4bb4b3;
+    --brand-danger: #cc2e3d;
+    --brand-warning: #ffad3a;
+    --brand-info: #377cfc;
+    --brand-neutral: #999;
 
     // App Cards gradient background
     --app-card-virtual: #{constants.$gradient-virtual};
