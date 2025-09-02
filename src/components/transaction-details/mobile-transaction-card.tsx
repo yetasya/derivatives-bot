@@ -103,18 +103,18 @@ export default function MobileTransactionCards({ transaction }: { transaction: T
                 />
                 <CardColumn
                     title='Entry Spot'
-                    label={transaction?.entry_tick}
+                    label={transaction?.entry_spot}
                     right_aligned
-                    loader={!transaction.entry_tick}
+                    loader={!transaction.entry_spot}
                 />
             </div>
             <div className={`${PARENT_CLASS}__card__row`}>
                 <CardColumn title='Buy Price' label={Math.abs(transaction?.buy_price ?? 0).toFixed(2)} />
                 <CardColumn
                     title='Exit Spot'
-                    label={transaction?.exit_tick}
+                    label={transaction?.exit_spot}
                     right_aligned
-                    loader={!transaction.exit_tick}
+                    loader={!transaction.exit_spot}
                 />
             </div>
 

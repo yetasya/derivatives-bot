@@ -6,9 +6,9 @@ export type TTransaction = {
     transaction_ids: { buy: string; sell: string };
     barrier: string;
     date_start: string;
-    entry_tick: string;
+    entry_spot: string;
     entry_tick_time: string;
-    exit_tick: string;
+    exit_spot: string;
     exit_tick_time: string;
     buy_price: string;
     profit: string;

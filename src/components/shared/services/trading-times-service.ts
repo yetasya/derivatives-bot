@@ -113,6 +113,15 @@ class TradingTimesService {
                                     { symbol: 'frxAUDUSD', display_name: 'AUD/USD', underlying_symbol: 'frxAUDUSD' },
                                 ],
                             },
+                            {
+                                name: 'Forex Basket',
+                                symbols: [
+                                    { symbol: 'WLDAUD', display_name: 'AUD Basket', underlying_symbol: 'WLDAUD' },
+                                    { symbol: 'WLDEUR', display_name: 'EUR Basket', underlying_symbol: 'WLDEUR' },
+                                    { symbol: 'WLDGBP', display_name: 'GBP Basket', underlying_symbol: 'WLDGBP' },
+                                    { symbol: 'WLDUSD', display_name: 'USD Basket', underlying_symbol: 'WLDUSD' },
+                                ],
+                            },
                         ],
                     },
                     {
