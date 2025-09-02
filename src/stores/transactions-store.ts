@@ -73,11 +73,12 @@ export default class TransactionsStore {
                 const is_completed = contract.is_completed || false;
                 const buy_price = Number(contract.buy_price) || 0;
                 const payout = Number(contract.payout) || Number(contract.bid_price) || 0;
+                const bid_price = Number(contract.bid_price) || 0;
 
                 if (is_completed) {
                     if (profit > 0) {
                         stats.won_contracts += 1;
-                        stats.total_payout += payout;
+                        stats.total_payout += payout ?? bid_price ?? 0;
                     } else {
                         stats.lost_contracts += 1;
                     }
