@@ -372,21 +372,53 @@ export default class ContractsFor {
     };
 
     async getMultiplierRange(symbol, trade_type) {
-        const contracts = await this.getContractsByTradeType(symbol, trade_type);
-        const multiplier_range = [];
-        const { opposites } = config();
+        try {
+            const contracts = await this.getContractsByTradeType(symbol, trade_type);
+            const multiplier_range = [];
+            const { opposites } = config();
 
-        const contract = contracts.find(c => {
-            return Object.keys(opposites).some(category => {
-                return opposites[category].map(subcategory => Object.keys(subcategory)[0]).includes(c.contract_type);
+            // For multiplier contracts, look for MULTUP or MULTDOWN contract types
+            const multiplier_contract_types = ['MULTUP', 'MULTDOWN'];
+
+            const contract = contracts.find(c => {
+                // Check if contract type is one of the multiplier types
+                if (multiplier_contract_types.includes(c.contract_type)) {
+                    return true;
+                }
+
+                // Fallback: check through opposites mapping
+                const multiplier_opposites = opposites['MULTIPLIER'] || [];
+                return multiplier_opposites.some(opposite => Object.keys(opposite).includes(c.contract_type));
             });
-        });
 
-        if (contract?.multiplier_range) {
-            multiplier_range.push(...contract.multiplier_range);
+            if (contract?.multiplier_range) {
+                multiplier_range.push(...contract.multiplier_range);
+            }
+
+            // If no multiplier range found, try to find any contract with multiplier_range
+            if (multiplier_range.length === 0) {
+                const any_contract_with_multipliers = contracts.find(
+                    c => c.multiplier_range && c.multiplier_range.length > 0
+                );
+                if (any_contract_with_multipliers?.multiplier_range) {
+                    multiplier_range.push(...any_contract_with_multipliers.multiplier_range);
+                }
+            }
+
+            if (multiplier_range.length === 0) {
+                console.warn(
+                    'DEBUG: No multiplier range found for symbol:',
+                    symbol,
+                    'Available contracts:',
+                    contracts.map(c => ({ contract_type: c.contract_type, has_multiplier_range: !!c.multiplier_range }))
+                );
+            }
+
+            return multiplier_range;
+        } catch (error) {
+            console.error('DEBUG: Error in getMultiplierRange:', error);
+            return [];
         }
-
-        return multiplier_range;
     }
 
     async getMarketBySymbol(symbol) {
