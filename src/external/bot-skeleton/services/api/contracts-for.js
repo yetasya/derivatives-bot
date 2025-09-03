@@ -68,7 +68,9 @@ export default class ContractsFor {
 
                     const has_matching_category = c.contract_category === real_trade_type;
                     const has_matching_duration = durations.findIndex(d => d.unit === duration) !== -1;
-                    const has_matching_barrier_category = c.barrier_category === barrier_category;
+                    // barrier_category field may not be available in API response anymore
+                    const has_matching_barrier_category =
+                        !c.barrier_category || c.barrier_category === barrier_category;
                     const has_matching_barrier_type =
                         // Match offset type barriers.
                         (has_selected_offset_type && isOffset(c.barrier || c[barrier_props[index]])) ||
@@ -176,13 +178,15 @@ export default class ContractsFor {
     async getContractsByTradeType(symbol, trade_type) {
         const contracts = await this.getContractsFor(symbol);
         const contract_category = this.getContractCategoryByTradeType(trade_type);
-        const barrier_category = this.getBarrierCategoryByTradeType(trade_type);
+        // barrier_category field may not be available in API response anymore
+        // const barrier_category = this.getBarrierCategoryByTradeType(trade_type);
 
         return contracts.filter(contract => {
             const has_matching_category = contract.contract_category === contract_category;
-            const has_matching_barrier = contract.barrier_category === barrier_category;
+            // barrier_category field may not be available in API response anymore
+            // const has_matching_barrier = contract.barrier_category === barrier_category;
 
-            return has_matching_category && has_matching_barrier;
+            return has_matching_category;
         });
     }
 
@@ -224,7 +228,8 @@ export default class ContractsFor {
                 } = response;
 
                 // We don't offer forward-starting contracts in bot.
-                const filtered_contracts = contracts.filter(c => c.start_type !== 'forward');
+                // Note: start_type field may not be available in API response anymore
+                const filtered_contracts = contracts.filter(c => !c.start_type || c.start_type !== 'forward');
 
                 this.contracts_for[symbol] = {
                     contracts: filtered_contracts,
