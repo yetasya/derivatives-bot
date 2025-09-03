@@ -50,7 +50,7 @@ const useMobileMenuConfig = (client?: RootStore['client']) => {
                 is_logged_in && {
                     as: 'a',
                     href: standalone_routes.deriv_app,
-                    label: localize('Hub'),
+                    label: localize('Home'),
                     LeftComponent: LegacyHomeOldIcon,
                 },
                 client?.is_logged_in && {
