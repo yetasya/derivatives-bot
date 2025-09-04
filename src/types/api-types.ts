@@ -59,8 +59,6 @@ import {
     ForgetAllResponse,
     ForgetRequest,
     ForgetResponse,
-    GetAccountSettingsRequest,
-    GetAccountSettingsResponse,
     GetFinancialAssessmentRequest,
     GetFinancialAssessmentResponse,
     IdentityVerificationAddDocumentRequest,
@@ -411,10 +409,6 @@ type TSocketEndpoints = {
         response: AccountLimitsResponse;
     };
 
-    get_settings: {
-        request: GetAccountSettingsRequest;
-        response: GetAccountSettingsResponse;
-    };
     identity_verification_document_add: {
         request: IdentityVerificationAddDocumentRequest;
         response: IdentityVerificationAddDocumentResponse;
@@ -914,7 +908,7 @@ export type TAuthData = {
     landing_company_fullname: string;
     landing_company_name: string;
     linked_to: [];
-    local_currencies: Record<string, any>;
+    local_currencies: Record<string, unknown>;
     loginid: string;
     preferred_language: string;
     scopes: string[];
