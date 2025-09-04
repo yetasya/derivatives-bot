@@ -28,25 +28,12 @@ const TradeAnimation = observer(({ className, should_show_overlay }: TTradeAnima
     const { isMobile } = useDevice();
 
     const { is_contract_completed, profit } = summary_card;
-    const {
-        contract_stage,
-        is_stop_button_visible,
-        is_stop_button_disabled,
-        onRunButtonClick,
-        onStopBotClick,
-        performSelfExclusionCheck,
-    } = run_panel;
+    const { contract_stage, is_stop_button_visible, is_stop_button_disabled, onRunButtonClick, onStopBotClick } =
+        run_panel;
     const { account_status } = client;
     const cashier_validation = account_status?.cashier_validation;
     const [shouldDisable, setShouldDisable] = React.useState(false);
     const is_unavailable_for_payment_agent = cashier_validation?.includes('WithdrawServiceUnavailableForPA');
-
-    // perform self-exclusion checks which will be stored under the self-exclusion-store
-    React.useEffect(() => {
-        if (!client.loginid || !client.is_logged_in) return;
-        performSelfExclusionCheck();
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, []);
 
     // Get the load_modal store to monitor strategy deletions
     const { load_modal } = useStore();
@@ -143,12 +130,12 @@ const TradeAnimation = observer(({ className, should_show_overlay }: TTradeAnima
             text: <Localize i18n_default_text='Run' />,
             icon: <LabelPairedPlayLgFillIcon fill='#fff' />,
         };
-    }, [is_stop_button_visible]);
+    }, [is_stop_button_visible, is_stop_button_disabled]);
     const show_overlay = should_show_overlay && is_contract_completed;
 
     // Fix TypeScript error by ensuring active_tab is a number
-    // Use a non-null assertion to tell TypeScript that active_tab will be a number
-    const safeActiveTab = (typeof active_tab === 'number' ? active_tab : 0) as number;
+    // Use a fallback to dashboard if active_tab is undefined
+    const safeActiveTab = typeof active_tab === 'number' ? active_tab : DBOT_TABS.DASHBOARD;
 
     // Function to determine tooltip alignment based on run panel position
     const determineTooltipAlignment = (): string => {
@@ -220,8 +207,14 @@ const TradeAnimation = observer(({ className, should_show_overlay }: TTradeAnima
                             return;
                         }
                         onRunButtonClick();
-                        // Cast to any to avoid TypeScript error with subpage_name
-                        rudderStackSendRunBotEvent({ subpage_name: safeActiveTab } as any);
+                        // Map tab index to proper subpage name
+                        const subpageMap: { [key: number]: 'dashboard' | 'bot_builder' | 'charts' | 'tutorials' } = {
+                            [DBOT_TABS.DASHBOARD]: 'dashboard',
+                            [DBOT_TABS.BOT_BUILDER]: 'bot_builder',
+                            [DBOT_TABS.CHART]: 'charts',
+                            [DBOT_TABS.TUTORIAL]: 'tutorials',
+                        };
+                        rudderStackSendRunBotEvent({ subpage_name: subpageMap[safeActiveTab] });
                     }}
                     has_effect
                     {...(is_stop_button_visible || !is_unavailable_for_payment_agent

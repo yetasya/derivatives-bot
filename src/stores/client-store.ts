@@ -36,7 +36,6 @@ export default class ClientStore {
     private root_store: RootStore;
 
     // TODO: fix with self exclusion
-    updateSelfExclusion = () => {};
 
     removeTokenFromUrl() {
         const url = new URL(window.location.href);

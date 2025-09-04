@@ -63,8 +63,6 @@ import {
     GetAccountSettingsResponse,
     GetFinancialAssessmentRequest,
     GetFinancialAssessmentResponse,
-    GetSelfExclusionRequest,
-    GetSelfExclusionResponse,
     IdentityVerificationAddDocumentRequest,
     IdentityVerificationAddDocumentResponse,
     KYCAuthenticationStatusRequest,
@@ -412,10 +410,7 @@ type TSocketEndpoints = {
         request: AccountLimitsRequest;
         response: AccountLimitsResponse;
     };
-    get_self_exclusion: {
-        request: GetSelfExclusionRequest;
-        response: GetSelfExclusionResponse;
-    };
+
     get_settings: {
         request: GetAccountSettingsRequest;
         response: GetAccountSettingsResponse;
