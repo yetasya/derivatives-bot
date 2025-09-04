@@ -163,10 +163,6 @@ const CoreStoreProvider: React.FC<{ children: React.ReactNode }> = observer(({ c
             Cookies.set('client_information', JSON.stringify(client_information), {
                 domain: currentDomain,
             });
-
-            api_base.api.getAccountStatus().then((res: TSocketResponseData<'get_account_status'>) => {
-                client?.setAccountStatus(res.get_account_status);
-            });
         }
     }, [isAuthorizing, isAuthorized, client, activeAccount?.loginid, activeLoginid, currentDomain]);
 

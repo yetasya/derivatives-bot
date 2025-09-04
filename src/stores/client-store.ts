@@ -10,7 +10,7 @@ import {
     setIsAuthorized,
 } from '@/external/bot-skeleton/services/api/observables/connection-status-stream';
 import type { TAuthData, TLandingCompany } from '@/types/api-types';
-import type { Balance, GetAccountStatus, WebsiteStatus } from '@deriv/api-types';
+import type { Balance, WebsiteStatus } from '@deriv/api-types';
 import { Analytics } from '@deriv-com/analytics';
 import type RootStore from './root-store';
 
@@ -22,7 +22,6 @@ export default class ClientStore {
     balance = '0';
     currency = 'AUD';
     is_logged_in = false;
-    account_status: GetAccountStatus | undefined;
 
     website_status: WebsiteStatus | undefined;
     landing_companies: TLandingCompany | undefined;
@@ -94,7 +93,6 @@ export default class ClientStore {
             accounts: observable,
             account_list: observable,
 
-            account_status: observable,
             all_accounts_balance: observable,
             balance: observable,
             currency: observable,
@@ -122,7 +120,6 @@ export default class ClientStore {
             onAuthorizeEvent: action,
             setAccountList: action,
 
-            setAccountStatus: action,
             setAllAccountsBalance: action,
             setBalance: action,
             setCurrency: action,
@@ -153,7 +150,7 @@ export default class ClientStore {
         return this.isBotAllowed();
     }
     get is_trading_experience_incomplete() {
-        return this.account_status?.status?.some(status => status === 'trading_experience_not_complete');
+        return false;
     }
 
     get is_eu() {
@@ -321,10 +318,6 @@ export default class ClientStore {
         return accountList[this.loginid] ?? '';
     };
 
-    setAccountStatus(status: GetAccountStatus | undefined) {
-        this.account_status = status;
-    }
-
     setWebsiteStatus(status: WebsiteStatus | undefined) {
         this.website_status = status;
     }
@@ -349,7 +342,6 @@ export default class ClientStore {
     logout = async () => {
         // reset all the states
         this.account_list = [];
-        this.account_status = undefined;
 
         this.landing_companies = undefined;
         this.accounts = {};

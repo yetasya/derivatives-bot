@@ -1,8 +1,6 @@
 import {
     AccountLimitsRequest,
     AccountLimitsResponse,
-    AccountStatusRequest,
-    AccountStatusResponse,
     ActiveSymbolsRequest,
     ActiveSymbolsResponse,
     APITokenRequest,
@@ -396,10 +394,7 @@ type TSocketEndpoints = {
         request: ForgetRequest;
         response: ForgetResponse;
     };
-    get_account_status: {
-        request: AccountStatusRequest;
-        response: AccountStatusResponse;
-    };
+
     get_financial_assessment: {
         request: GetFinancialAssessmentRequest;
         response: GetFinancialAssessmentResponse;
