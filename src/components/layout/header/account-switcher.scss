@@ -4,13 +4,17 @@
 /** @define acc-info */
 .acc-info {
     align-items: center;
-    cursor: pointer;
+    cursor: default;
     display: flex;
     flex-direction: row;
     height: 100%;
     justify-content: center;
-    padding: 0 1.6rem 0 1.7rem;
+    padding: 0 1.6rem;
     width: max-content;
+
+    &:hover {
+        background: transparent !important;
+    }
 
     &__preloader {
         position: absolute;
@@ -117,28 +121,64 @@
         -webkit-tap-highlight-color: transparent;
     }
 
+    &__content {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+    }
+
+    &__account-type-header {
+        display: flex;
+        align-items: center;
+        margin-bottom: 0.2rem;
+    }
+
+    &__account-type {
+        @include typeface(--xxsmall-left-normal-grey);
+
+        line-height: 1;
+        margin: 0;
+        font-size: var(--text-size-xxs);
+    }
+
+    &__balance-section {
+        display: flex;
+        align-items: center;
+    }
+
+    &__balance {
+        @include typeface(--paragraph-left-bold-black);
+
+        line-height: 1.4;
+        pointer-events: none;
+        margin: 0;
+        font-size: 1.4rem;
+        color: var(--status-success);
+
+        &--no-currency {
+            @include typeface(--small-left-normal-grey);
+
+            white-space: nowrap;
+        }
+    }
+
     &__id {
         pointer-events: none;
+        display: flex;
+        align-items: center;
 
         &-icon {
-            vertical-align: middle;
+            display: flex;
+            align-items: center;
+            justify-content: center;
             margin-right: 0.8rem;
         }
     }
 
     &__separator {
         border-right: 1px solid var(--general-section-1);
-        width: 2rem;
         height: 3.2rem;
         margin-right: -0.1rem;
-    }
-
-    &__balance {
-        @include typeface(--title-center-bold-green, default);
-
-        line-height: 2.4rem;
-        pointer-events: none;
-        margin-right: 0.8rem;
     }
 
     &__account-type-and-balance {
@@ -191,7 +231,7 @@
 
     &--is-virtual {
         .acc-info__balance {
-            color: var(--text-profit-success);
+            @include typeface(--paragraph-left-bold-green);
         }
     }
 
@@ -665,4 +705,29 @@
     pointer-events: none !important;
     cursor: default !important;
     border-inline-end: 1px solid var(--general-section-1);
+}
+
+// AccountInfoWrapper styles
+.account-info-wrapper {
+    display: contents;
+
+    &--disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+    }
+}
+
+.header {
+    &__logout-button {
+        margin-right: 0.8rem;
+        margin-left: 1.6rem;
+
+        &:hover {
+            background: transparent !important;
+        }
+
+        .dc-text {
+            color: var(--text-general) !important;
+        }
+    }
 }
