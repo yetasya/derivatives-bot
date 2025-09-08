@@ -100,6 +100,8 @@ class APIBase {
 
                 if (response?.error) {
                     console.error('Token exchange failed:', response.error);
+                    // Emit InvalidToken event for invalid URL parameter tokens
+                    globalObserver.emit('InvalidToken', { error: response.error });
                     setIsAuthorizing(false);
                     return;
                 }
@@ -110,6 +112,8 @@ class APIBase {
                 }
             } catch (error) {
                 console.error('Error exchanging token:', error);
+                // Emit InvalidToken event for any token exchange errors
+                globalObserver.emit('InvalidToken', { error });
                 setIsAuthorizing(false);
                 return;
             }
