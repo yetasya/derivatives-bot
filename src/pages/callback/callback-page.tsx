@@ -74,6 +74,7 @@ const CallbackPage = () => {
                             if (Cookies.get('logged_state') === 'true') {
                                 globalObserver.emit('InvalidToken', { error });
                             }
+
                             if (Cookies.get('logged_state') === 'false') {
                                 // If the user is not logged out, we need to clear the local storage
                                 clearAuthData();
