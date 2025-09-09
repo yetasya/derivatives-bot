@@ -7,9 +7,9 @@ export const getDefaultError = () => ({
 });
 
 export const getAuthError = () => ({
-    header: localize('Invalid Token'),
-    description: localize('The token you provided is invalid. Please sign in again to continue.'),
-    cta_label: localize('Sign in again'),
+    header: localize('The Token is Invalid'),
+    description: localize('Please log in'),
+    cta_label: localize('Log in'),
 });
 
 export const STATUS_CODES = Object.freeze({
