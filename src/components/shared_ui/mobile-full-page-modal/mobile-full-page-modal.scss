@@ -91,6 +91,14 @@
                 top: #{$MOBILE_HEADER_HEIGHT};
                 width: 100%;
                 height: #{$MOBILE_WRAPPER_HEADER_HEIGHT};
+                background-color: var(--general-main-1);
+
+                &-wrapper {
+                    display: flex;
+                    align-items: center;
+                    justify-content: space-between;
+                    padding: 1rem 1.6rem 1rem 0;
+                }
             }
         }
 
