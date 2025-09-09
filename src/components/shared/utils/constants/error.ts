@@ -7,7 +7,7 @@ export const getDefaultError = () => ({
 });
 
 export const getAuthError = () => ({
-    header: localize('The Token is Invalid'),
+    header: localize('The token is invalid'),
     description: localize('Please log in'),
     cta_label: localize('Log in'),
 });
