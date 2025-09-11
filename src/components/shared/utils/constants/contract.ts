@@ -120,7 +120,7 @@ export const getMarketNamesMap = () =>
         OTC_FTSE: localize('UK 100'),
         OTC_GDAXI: localize('Germany 40'),
         OTC_HSI: localize('Hong Kong 50'),
-        OTC_IBEX35: localize('Spanish Index'),
+        OTC_IBEX35: localize('Spain 35'),
         OTC_N225: localize('Japan 225'),
         OTC_NDX: localize('US Tech 100'),
         OTC_SPC: localize('US 500'),

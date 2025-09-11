@@ -278,9 +278,9 @@ export const MARKET_MAPPINGS = {
         ['american_indices', 'American Indices'],
         ['european_indices', 'European Indices'],
         ['otc_index', 'OTC Indices'],
-        ['europe_OTC', 'European OTC'],
-        ['asia_oceania_OTC', 'Asia Oceania OTC'],
-        ['americas_OTC', 'Americas OTC'],
+        ['europe_OTC', 'European Indices'],
+        ['asia_oceania_OTC', 'Asian Indices'],
+        ['americas_OTC', 'American Indices'],
         ['otc_indices', 'OTC Indices'],
         ['us_indices', 'US Indices'],
         ['stock_indices', 'Stock Indices'],
@@ -626,7 +626,7 @@ export const SYMBOL_PATTERNS = new Map([
                 ['AEX', 'Netherlands 25'],
                 ['SSMI', 'Swiss 20'],
                 ['SX5E', 'Euro 50'],
-                ['IBEX35', 'Spanish Index'],
+                ['IBEX35', 'Spain 35'],
             ]);
             return index_names.get(match[1]) || `${match[1]} Index`;
         },
