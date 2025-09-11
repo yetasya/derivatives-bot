@@ -139,6 +139,19 @@ class TradingTimesService {
                                 symbols: [
                                     { symbol: 'OTC_FTSE', display_name: 'UK 100', underlying_symbol: 'OTC_FTSE' },
                                     { symbol: 'OTC_GDAXI', display_name: 'Germany 40', underlying_symbol: 'OTC_GDAXI' },
+                                    { symbol: 'OTC_SX5E', display_name: 'Euro 50', underlying_symbol: 'OTC_SX5E' },
+                                    { symbol: 'OTC_IBEX35', display_name: 'Spain 35', underlying_symbol: 'OTC_IBEX35' },
+                                ],
+                            },
+                            {
+                                name: 'Asian Indices',
+                                symbols: [
+                                    {
+                                        symbol: 'OTC_AS51',
+                                        display_name: 'Australia 200',
+                                        underlying_symbol: 'OTC_AS51',
+                                    },
+                                    { symbol: 'OTC_N225', display_name: 'Japan 225', underlying_symbol: 'OTC_N225' },
                                 ],
                             },
                         ],
@@ -163,6 +176,17 @@ class TradingTimesService {
                                 symbols: [
                                     { symbol: 'frxXAUUSD', display_name: 'Gold/USD', underlying_symbol: 'frxXAUUSD' },
                                     { symbol: 'frxXAGUSD', display_name: 'Silver/USD', underlying_symbol: 'frxXAGUSD' },
+                                    {
+                                        symbol: 'FRXXPDUSD',
+                                        display_name: 'Palladium/USD',
+                                        underlying_symbol: 'FRXXPDUSD',
+                                    },
+                                    {
+                                        symbol: 'FRXXPTUSD',
+                                        display_name: 'Platinum/USD',
+                                        underlying_symbol: 'FRXXPTUSD',
+                                    },
+                                    { symbol: 'WLDXAU', display_name: 'Gold Basket', underlying_symbol: 'WLDXAU' },
                                 ],
                             },
                         ],
