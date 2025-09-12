@@ -42,8 +42,8 @@ export default defineConfig({
                 DATADOG_CLIENT_TOKEN: JSON.stringify(process.env.DATADOG_CLIENT_TOKEN),
                 RUDDERSTACK_KEY: JSON.stringify(
                     process.env.APP_ENV === 'production'
-                        ? process.env.RUDDERSTACK_KEY_PROD || '32Y8UzsuVhccBpJlBskTpitrNGM'
-                        : process.env.RUDDERSTACK_KEY_DEV || '32Y8WIUUqafX7ZjIMMXjaR1wfBA'
+                        ? process.env.RUDDERSTACK_KEY_PROD
+                        : process.env.RUDDERSTACK_KEY_DEV
                 ),
                 GROWTHBOOK_CLIENT_KEY: JSON.stringify(process.env.GROWTHBOOK_CLIENT_KEY),
                 GROWTHBOOK_DECRYPTION_KEY: JSON.stringify(process.env.GROWTHBOOK_DECRYPTION_KEY),
