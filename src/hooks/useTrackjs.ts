@@ -14,7 +14,7 @@ const useTrackjs = () => {
         try {
             if (!TrackJS.isInstalled()) {
                 TrackJS.install({
-                    application: 'standalone-deriv-bot',
+                    application: 'dbot_v2',
                     dedupe: false,
                     enabled: isProduction,
                     token: TRACKJS_TOKEN!,
