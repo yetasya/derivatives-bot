@@ -1,6 +1,10 @@
 {
     "brand_name": "Deriv",
     "brand_domain": "deriv.com",
+    "brand_hostname": {
+        "staging": "staging-home.deriv.com/dashboard",
+        "production": "home.deriv.com/dashboard"
+    },
     "domain_name": "Deriv.com",
     "colors": {
         "primary": "#ff444f",

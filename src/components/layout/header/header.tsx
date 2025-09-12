@@ -52,17 +52,6 @@ const AppHeader = observer(({ isAuthenticating }: TAppHeaderProps) => {
             return (
                 <>
                     <AccountSwitcher activeAccount={activeAccount} />
-                    {isDesktop && (
-                        <Button
-                            className='header__logout-button'
-                            onClick={() => {
-                                client?.logout?.();
-                            }}
-                            tertiary
-                        >
-                            <Localize i18n_default_text='Log out' />
-                        </Button>
-                    )}
                 </>
             );
         } else {

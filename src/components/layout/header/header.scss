@@ -221,26 +221,6 @@
         inset-inline-end: 0;
     }
 
-    &__logout {
-        align-items: center;
-        display: flex;
-        grid-column: 2 / 3;
-        justify-content: flex-end;
-        justify-self: end;
-        padding: 1.6em 1.3em;
-
-        &-text {
-            margin-inline-end: 1rem;
-            font-size: var(--text-size-xs);
-        }
-
-        &--loader {
-            display: flex;
-            justify-content: flex-end;
-            padding: 16px;
-        }
-    }
-
     &__tradershub-link {
         background: var(--du-general-main-2);
         color: var(--text-prominent);

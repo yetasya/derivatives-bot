@@ -1,5 +1,14 @@
-import { LocalStorageConstants, LocalStorageUtils, URLUtils } from '@deriv-com/utils';
+import brandConfig from '../../../../../brand.config.json';
 import { isStaging } from '../url/helpers';
+
+// Simple environment detection based on hostname
+const getCurrentEnvironment = (): 'staging' | 'production' => {
+    const hostname = window.location.hostname;
+    if (hostname.includes('localhost') || hostname.includes('staging')) {
+        return 'staging';
+    }
+    return 'production';
+};
 
 export const APP_IDS = {
     LOCALHOST: 36300,
@@ -143,38 +152,8 @@ export const getDebugServiceWorker = () => {
 };
 
 export const generateOAuthURL = () => {
-    const { getOauthURL } = URLUtils;
-    const oauth_url = getOauthURL();
-    const original_url = new URL(oauth_url);
-    const hostname = window.location.hostname;
-
-    // First priority: Check for configured server URLs (for QA/testing environments)
-    const configured_server_url = (LocalStorageUtils.getValue(LocalStorageConstants.configServerURL) ||
-        localStorage.getItem('config.server_url')) as string;
-
-    const valid_server_urls = ['green.derivws.com', 'red.derivws.com', 'blue.derivws.com', 'canary.derivws.com'];
-
-    if (
-        configured_server_url &&
-        (typeof configured_server_url === 'string'
-            ? !valid_server_urls.includes(configured_server_url)
-            : !valid_server_urls.includes(JSON.stringify(configured_server_url)))
-    ) {
-        original_url.hostname = configured_server_url;
-    } else if (original_url.hostname.includes('oauth.deriv.')) {
-        // Second priority: Domain-based OAuth URL setting for .me and .be domains
-        if (hostname.includes('.deriv.me')) {
-            original_url.hostname = 'oauth.deriv.me';
-        } else if (hostname.includes('.deriv.be')) {
-            original_url.hostname = 'oauth.deriv.be';
-        } else {
-            // Fallback to original logic for other domains
-            const current_domain = getCurrentProductionDomain();
-            if (current_domain) {
-                const domain_suffix = current_domain.replace(/^[^.]+\./, '');
-                original_url.hostname = `oauth.${domain_suffix}`;
-            }
-        }
-    }
-    return original_url.toString() || oauth_url;
+    // Use brand config for login URLs
+    const environment = getCurrentEnvironment();
+    const hostname = brandConfig.brand_hostname[environment];
+    return `https://${hostname}/login`;
 };
